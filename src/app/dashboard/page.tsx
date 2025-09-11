@@ -1,14 +1,14 @@
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
-import HomeClient from './HomeClient'
+import DashboardClient from './DashboardClient'
 
-export default async function Home() {
+export default async function Dashboard() {
   const session = await getServerSession(authOptions)
 
-  if (session) {
-    redirect('/dashboard')
+  if (!session) {
+    redirect('/login')
   }
 
-  return <HomeClient />
+  return <DashboardClient session={session} />
 }

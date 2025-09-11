@@ -3,14 +3,14 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model User {
   id         String    @id @default(cuid())
   email      String    @unique
+  password   String
   name       String?
   image      String?
   createdAt  DateTime  @default(now())
@@ -27,7 +27,7 @@ model Exercise {
   name             String
   description      String?
   instructions     String?
-  muscleGroups     String[]
+  muscleGroups     String
   equipment        String?
   category         String           // 'strength' | 'cardio' | 'flexibility' | 'sport'
   imageUrl         String?
