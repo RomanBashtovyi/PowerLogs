@@ -1,7 +1,7 @@
 'use client'
 
-import { useLanguage } from './LanguageProvider'
-import { Button } from './ui/button'
+import { useLanguage } from '../providers'
+import { Button } from '../ui/button'
 
 export default function LanguageToggle() {
   const { language, setLanguage } = useLanguage()

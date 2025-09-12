@@ -1,10 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { useLanguage } from '@/components/LanguageProvider'
+import { useLanguage } from '@/components/providers'
 import { Button } from '@/components/ui/button'
-import ThemeToggle from '@/components/ThemeToggle'
-import LanguageToggle from '@/components/LanguageToggle'
+import { ThemeToggle, LanguageToggle } from '@/components/layout'
 
 export default function HomeClient() {
   const { t } = useLanguage()

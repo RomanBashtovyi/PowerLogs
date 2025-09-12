@@ -1,12 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useLanguage } from '@/components/LanguageProvider'
-import { Session } from 'next-auth'
-
-interface DashboardClientProps {
-  session: Session
-}
+import { useLanguage } from '@/components/providers'
+import { DashboardClientProps } from '@/types/components'
 
 export default function DashboardClient({ session }: DashboardClientProps) {
   const { t } = useLanguage()

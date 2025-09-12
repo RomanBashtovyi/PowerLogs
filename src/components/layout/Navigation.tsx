@@ -4,10 +4,10 @@ import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { useLanguage } from './LanguageProvider'
+import { useLanguage } from '../providers'
 import ThemeToggle from './ThemeToggle'
 import LanguageToggle from './LanguageToggle'
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
 
 export default function Navigation() {
   const { data: session } = useSession()
