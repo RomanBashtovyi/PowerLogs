@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate-secret": "node scripts/generate-secret.js"
   },
   "keywords": [],
   "author": "",
