@@ -5,6 +5,7 @@ import { useLanguage } from '@/components/providers'
 import { Button } from '@/components/ui/button'
 import { Exercise } from '@/types/workout'
 import { EXERCISE_CATEGORIES, MUSCLE_GROUPS } from '@/constants/categories'
+import { getTranslatedExercise } from '@/lib/translations'
 
 interface ExerciseCardProps {
   exercise: Exercise
@@ -24,6 +25,11 @@ export default function ExerciseCard({
   showActions = true,
 }: ExerciseCardProps) {
   const { t, language } = useLanguage()
+
+  // Get translated exercise name and description for system exercises
+  const translatedExercise = !exercise.isCustom
+    ? getTranslatedExercise(exercise.name, language)
+    : { name: exercise.name, description: exercise.description }
 
   const parseMuscleGroups = (muscleGroupsString: string): string[] => {
     try {
@@ -63,7 +69,7 @@ export default function ExerciseCard({
       {/* Header */}
       <div className="flex justify-between items-start mb-3">
         <div className="flex-1">
-          <h3 className="font-semibold text-lg text-foreground line-clamp-2">{exercise.name}</h3>
+          <h3 className="font-semibold text-lg text-foreground line-clamp-2">{translatedExercise.name}</h3>
           <div className="flex items-center gap-2 mt-1">
             <span className="text-lg">{getCategoryIcon(exercise.category)}</span>
             <span className="text-sm text-muted-foreground">{getCategoryName(exercise.category)}</span>
@@ -74,8 +80,10 @@ export default function ExerciseCard({
       </div>
 
       {/* Description */}
-      {exercise.description && (
-        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{exercise.description}</p>
+      {(translatedExercise.description || exercise.description) && (
+        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+          {translatedExercise.description || exercise.description}
+        </p>
       )}
 
       {/* Muscle Groups */}

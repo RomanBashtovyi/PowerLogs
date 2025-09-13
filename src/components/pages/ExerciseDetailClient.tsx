@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { ExerciseForm } from '@/components/features/exercise'
 import { Exercise } from '@/types/workout'
 import { EXERCISE_CATEGORIES, MUSCLE_GROUPS } from '@/constants/categories'
+import { getTranslatedExercise } from '@/lib/translations'
 
 interface ExerciseDetailClientProps {
   exerciseId: string
@@ -179,6 +180,11 @@ export default function ExerciseDetailClient({ exerciseId }: ExerciseDetailClien
 
   const muscleGroups = parseMuscleGroups(exercise.muscleGroups)
 
+  // Get translated exercise name and description for system exercises
+  const translatedExercise = !exercise.isCustom
+    ? getTranslatedExercise(exercise.name, language)
+    : { name: exercise.name, description: exercise.description }
+
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-6">
       <div className="max-w-4xl mx-auto px-4 py-6">
@@ -187,7 +193,7 @@ export default function ExerciseDetailClient({ exerciseId }: ExerciseDetailClien
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <span className="text-2xl">{getCategoryIcon(exercise.category)}</span>
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground">{exercise.name}</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground">{translatedExercise.name}</h1>
               {exercise.isCustom && (
                 <span className="bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-full">Custom</span>
               )}
@@ -215,10 +221,12 @@ export default function ExerciseDetailClient({ exerciseId }: ExerciseDetailClien
             <h2 className="text-xl font-semibold text-foreground mb-4">{t('exerciseDetails')}</h2>
 
             {/* Description */}
-            {exercise.description && (
+            {(translatedExercise.description || exercise.description) && (
               <div className="mb-6">
                 <label className="text-sm font-medium text-muted-foreground">{t('description')}</label>
-                <p className="text-foreground mt-2 leading-relaxed">{exercise.description}</p>
+                <p className="text-foreground mt-2 leading-relaxed">
+                  {translatedExercise.description || exercise.description}
+                </p>
               </div>
             )}
 

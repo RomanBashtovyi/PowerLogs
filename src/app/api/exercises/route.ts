@@ -38,7 +38,8 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
-    const limit = parseInt(searchParams.get('limit') || '50')
+    // Default limit of 120 covers expanded system exercises (~80-100) + user custom exercises (~10-20)
+    const limit = parseInt(searchParams.get('limit') || '120')
     const offset = parseInt(searchParams.get('offset') || '0')
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category') || ''
