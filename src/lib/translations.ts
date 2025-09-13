@@ -181,6 +181,15 @@ export const translations = {
     loading: 'Завантаження...',
     error: 'Помилка',
     success: 'Успішно',
+    confirm: 'Підтвердити',
+
+    // Confirmation messages
+    confirmDelete: 'Підтвердити видалення',
+    confirmDeleteMessage: 'Ця дія незворотна. Ви впевнені, що хочете видалити?',
+    confirmDeleteExercise: 'Видалити вправу?',
+    confirmDeleteExerciseMessage: 'Ви впевнені, що хочете видалити цю вправу з тренування?',
+    confirmDeleteWorkout: 'Видалити тренування?',
+    confirmDeleteWorkoutMessage: 'Ця дія незворотна. Всі дані тренування будуть втрачені.',
     search: 'Пошук',
     filter: 'Фільтр',
     date: 'Дата',
@@ -205,6 +214,22 @@ export const translations = {
     recentWorkouts: 'Останні тренування',
     allWorkouts: 'Всі тренування',
     workoutTemplates: 'Шаблони тренувань',
+    selectExercise: 'Вибрати вправу',
+    addExercise: 'Додати вправу',
+    removeExercise: 'Видалити вправу',
+    workoutExercises: 'Вправи тренування',
+    noExercisesInWorkout: 'Немає вправ у тренуванні',
+    addFirstExercise: 'Додайте першу вправу до тренування',
+
+    // Progress tracking
+    progressTracking: 'Відстеження прогресу',
+    manageTracking: 'Управління відстеженням',
+    trackingSettings: 'Налаштування трекінгу',
+    trackedExercises: 'Відстежувані вправи',
+    trackThis: 'Відстежувати',
+    stopTracking: 'Припинити відстеження',
+    autoTrackingSetup: 'Автоматичне налаштування трекінгу',
+    baseExercisesTracked: 'Базові вправи додано до відстеження',
 
     // Exercise form
     exerciseNameRequired: "Назва вправи обов'язкова",

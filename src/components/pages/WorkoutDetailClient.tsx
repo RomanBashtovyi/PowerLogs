@@ -7,8 +7,12 @@ import { format } from 'date-fns'
 import { uk, enUS } from 'date-fns/locale'
 import { useLanguage } from '@/components/providers'
 import { Button } from '@/components/ui/button'
-import { WorkoutForm } from '@/components/features/workout'
-import { Workout } from '@/types/workout'
+import { WorkoutForm, ExerciseSelector } from '@/components/features/workout'
+import { ExerciseCard } from '@/components/features/exercise'
+import ConfirmationModal from '@/components/ui/ConfirmationModal'
+import { Workout, Exercise, WorkoutExercise } from '@/types/workout'
+import { getTranslatedExercise } from '@/lib/translations'
+import { useConfirmation } from '@/hooks/useConfirmation'
 
 interface WorkoutDetailClientProps {
   workoutId: string
@@ -17,14 +21,24 @@ interface WorkoutDetailClientProps {
 export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientProps) {
   const { t, language } = useLanguage()
   const router = useRouter()
+  const {
+    confirmationState,
+    showConfirmation,
+    hideConfirmation,
+    setLoading: setConfirmationLoading,
+  } = useConfirmation()
   const [workout, setWorkout] = useState<Workout | null>(null)
+  const [workoutExercises, setWorkoutExercises] = useState<WorkoutExercise[]>([])
   const [loading, setLoading] = useState(true)
+  const [exercisesLoading, setExercisesLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [showExerciseSelector, setShowExerciseSelector] = useState(false)
 
   useEffect(() => {
     fetchWorkout()
+    fetchWorkoutExercises()
   }, [workoutId])
 
   const fetchWorkout = async () => {
@@ -50,6 +64,80 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
     }
   }
 
+  const fetchWorkoutExercises = async () => {
+    try {
+      setExercisesLoading(true)
+      const response = await fetch(`/api/workouts/${workoutId}/exercises`)
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch workout exercises')
+      }
+
+      const data = await response.json()
+      setWorkoutExercises(data.exercises || [])
+    } catch (err) {
+      console.error('Error fetching workout exercises:', err)
+    } finally {
+      setExercisesLoading(false)
+    }
+  }
+
+  const handleAddExercise = async (exercise: Exercise) => {
+    try {
+      const nextOrder = workoutExercises.length
+      const response = await fetch(`/api/workouts/${workoutId}/exercises`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          exerciseId: exercise.id,
+          order: nextOrder,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to add exercise to workout')
+      }
+
+      // Refresh exercises list
+      fetchWorkoutExercises()
+    } catch (err) {
+      console.error('Error adding exercise to workout:', err)
+      // TODO: Replace with toast notification
+    }
+  }
+
+  const handleRemoveExercise = async (workoutExerciseId: string) => {
+    const confirmed = await showConfirmation({
+      title: t('confirmDeleteExercise'),
+      message: t('confirmDeleteExerciseMessage'),
+      confirmText: t('delete'),
+      cancelText: t('cancel'),
+      confirmVariant: 'destructive',
+      icon: '🗑️',
+    })
+
+    if (!confirmed) return
+
+    try {
+      setConfirmationLoading(true)
+      const response = await fetch(`/api/workouts/${workoutId}/exercises/${workoutExerciseId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to remove exercise from workout')
+      }
+
+      // Refresh exercises list
+      fetchWorkoutExercises()
+    } catch (err) {
+      console.error('Error removing exercise from workout:', err)
+      // Could add a toast notification here instead of alert
+    } finally {
+      setConfirmationLoading(false)
+    }
+  }
+
   const handleEdit = async (formData: any) => {
     try {
       const response = await fetch(`/api/workouts/${workoutId}`, {
@@ -72,12 +160,20 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
   }
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this workout? This action cannot be undone.')) {
-      return
-    }
+    const confirmed = await showConfirmation({
+      title: t('confirmDeleteWorkout'),
+      message: t('confirmDeleteWorkoutMessage'),
+      confirmText: t('delete'),
+      cancelText: t('cancel'),
+      confirmVariant: 'destructive',
+      icon: '🗑️',
+    })
+
+    if (!confirmed) return
 
     try {
       setIsDeleting(true)
+      setConfirmationLoading(true)
       const response = await fetch(`/api/workouts/${workoutId}`, {
         method: 'DELETE',
       })
@@ -89,9 +185,10 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
       router.push('/workouts')
     } catch (err) {
       console.error('Error deleting workout:', err)
-      alert('Failed to delete workout')
+      // Could add a toast notification here instead of alert
     } finally {
       setIsDeleting(false)
+      setConfirmationLoading(false)
     }
   }
 
@@ -134,7 +231,7 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
             <div className="text-6xl mb-4">😕</div>
             <h2 className="text-2xl font-bold text-foreground mb-2">{error || 'Workout not found'}</h2>
             <p className="text-muted-foreground mb-6">
-              The workout you're looking for doesn't exist or you don't have permission to view it.
+              The workout you&apos;re looking for doesn&apos;t exist or you don&apos;t have permission to view it.
             </p>
             <Link href="/workouts">
               <Button>← Back to Workouts</Button>
@@ -239,57 +336,83 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
           {/* Exercises Section */}
           <div className="fitness-card p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-foreground">Exercises</h2>
-              <Button variant="outline" size="sm">
-                ➕ Add Exercise
+              <h2 className="text-xl font-semibold text-foreground">{t('workoutExercises')}</h2>
+              <Button variant="outline" size="sm" onClick={() => setShowExerciseSelector(true)}>
+                ➕ {t('addExercise')}
               </Button>
             </div>
 
-            {!workout.exercises || workout.exercises.length === 0 ? (
+            {exercisesLoading ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-muted-foreground">{t('loading')}</p>
+              </div>
+            ) : workoutExercises.length === 0 ? (
               <div className="text-center py-8">
                 <div className="text-4xl mb-4">💪</div>
-                <p className="text-muted-foreground">
-                  No exercises added yet. Add exercises to track your workout progress.
-                </p>
+                <h3 className="text-lg font-semibold text-foreground mb-2">{t('noExercisesInWorkout')}</h3>
+                <p className="text-muted-foreground mb-4">{t('addFirstExercise')}</p>
+                <Button onClick={() => setShowExerciseSelector(true)}>➕ {t('addExercise')}</Button>
               </div>
             ) : (
               <div className="space-y-4">
-                {workout.exercises.map((workoutExercise, index) => (
-                  <div key={workoutExercise.id} className="border border-border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <h3 className="font-semibold text-foreground">
-                          {index + 1}. {workoutExercise.exercise?.name || 'Unknown Exercise'}
-                        </h3>
-                        {workoutExercise.notes && (
-                          <p className="text-sm text-muted-foreground mt-1">{workoutExercise.notes}</p>
-                        )}
-                      </div>
-                    </div>
+                {workoutExercises.map((workoutExercise, index) => {
+                  const translatedExercise =
+                    workoutExercise.exercise && !workoutExercise.exercise.isCustom
+                      ? getTranslatedExercise(workoutExercise.exercise.name, language)
+                      : {
+                          name: workoutExercise.exercise?.name || 'Unknown Exercise',
+                          description: workoutExercise.exercise?.description,
+                        }
 
-                    {/* Sets */}
-                    {workoutExercise.sets && workoutExercise.sets.length > 0 && (
-                      <div className="mt-3">
-                        <h4 className="text-sm font-medium text-muted-foreground mb-2">Sets</h4>
-                        <div className="space-y-2">
-                          {workoutExercise.sets.map((set, setIndex) => (
-                            <div key={set.id} className="flex items-center gap-4 text-sm">
-                              <span className="w-8 text-center text-muted-foreground">{setIndex + 1}</span>
-                              <span className="text-foreground">
-                                {set.weight}kg × {set.reps} reps
-                              </span>
-                              {set.rpe && <span className="text-muted-foreground">RPE {set.rpe}</span>}
-                              {set.isWarmup && (
-                                <span className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded">Warmup</span>
-                              )}
-                              {set.completed && <span className="text-green-600">✓</span>}
-                            </div>
-                          ))}
+                  return (
+                    <div key={workoutExercise.id} className="border border-border rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-foreground">
+                            {index + 1}. {translatedExercise.name}
+                          </h3>
+                          {workoutExercise.notes && (
+                            <p className="text-sm text-muted-foreground mt-1">{workoutExercise.notes}</p>
+                          )}
                         </div>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleRemoveExercise(workoutExercise.id)}
+                        >
+                          🗑️
+                        </Button>
                       </div>
-                    )}
-                  </div>
-                ))}
+
+                      {/* Sets */}
+                      {workoutExercise.sets && workoutExercise.sets.length > 0 ? (
+                        <div className="mt-3">
+                          <h4 className="text-sm font-medium text-muted-foreground mb-2">Sets</h4>
+                          <div className="space-y-2">
+                            {workoutExercise.sets.map((set, setIndex) => (
+                              <div key={set.id} className="flex items-center gap-4 text-sm">
+                                <span className="w-8 text-center text-muted-foreground">{setIndex + 1}</span>
+                                <span className="text-foreground">
+                                  {set.weight}kg × {set.reps} reps
+                                </span>
+                                {set.rpe && <span className="text-muted-foreground">RPE {set.rpe}</span>}
+                                {set.isWarmup && (
+                                  <span className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded">
+                                    Warmup
+                                  </span>
+                                )}
+                                {set.completed && <span className="text-green-600">✓</span>}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="mt-3 text-center py-4 text-muted-foreground">No sets recorded yet</div>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             )}
           </div>
@@ -302,6 +425,29 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
           </Link>
         </div>
       </div>
+
+      {/* Exercise Selector Modal */}
+      {showExerciseSelector && (
+        <ExerciseSelector
+          onSelectExercise={handleAddExercise}
+          onClose={() => setShowExerciseSelector(false)}
+          selectedExercises={workoutExercises.map((we) => we.exerciseId)}
+        />
+      )}
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmationState.isOpen}
+        onClose={hideConfirmation}
+        onConfirm={confirmationState.onConfirm}
+        title={confirmationState.title}
+        message={confirmationState.message}
+        confirmText={confirmationState.confirmText}
+        cancelText={confirmationState.cancelText}
+        confirmVariant={confirmationState.confirmVariant}
+        icon={confirmationState.icon}
+        loading={confirmationState.loading}
+      />
     </div>
   )
 }

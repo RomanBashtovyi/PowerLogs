@@ -28,7 +28,7 @@ export default function Navigation() {
     { href: '/dashboard', label: t('dashboard'), icon: '📊' },
     { href: '/workouts', label: t('workouts'), icon: '🏋️' },
     { href: '/exercises', label: t('exercises'), icon: '💪' },
-    { href: '/templates', label: t('templates'), icon: '📋' },
+    { href: '/dashboard/progress-tracking', label: t('progressTracking'), icon: '📈' },
   ]
 
   return (

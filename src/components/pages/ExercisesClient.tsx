@@ -5,13 +5,21 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useLanguage } from '@/components/providers'
 import { Button } from '@/components/ui/button'
+import ConfirmationModal from '@/components/ui/ConfirmationModal'
 import { ExerciseCard } from '@/components/features/exercise'
 import { Exercise, ExerciseCategory, MuscleGroup } from '@/types/workout'
 import { EXERCISE_CATEGORIES, MUSCLE_GROUPS } from '@/constants/categories'
+import { useConfirmation } from '@/hooks/useConfirmation'
 
 export default function ExercisesClient() {
   const { t } = useLanguage()
   const pathname = usePathname()
+  const {
+    confirmationState,
+    showConfirmation,
+    hideConfirmation,
+    setLoading: setConfirmationLoading,
+  } = useConfirmation()
   const [exercises, setExercises] = useState<Exercise[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -54,11 +62,19 @@ export default function ExercisesClient() {
   }
 
   const handleDeleteExercise = async (exerciseId: string) => {
-    if (!confirm('Are you sure you want to delete this exercise?')) {
-      return
-    }
+    const confirmed = await showConfirmation({
+      title: t('confirmDelete'),
+      message: t('confirmDeleteMessage'),
+      confirmText: t('delete'),
+      cancelText: t('cancel'),
+      confirmVariant: 'destructive',
+      icon: '🗑️',
+    })
+
+    if (!confirmed) return
 
     try {
+      setConfirmationLoading(true)
       const response = await fetch(`/api/exercises/${exerciseId}`, {
         method: 'DELETE',
       })
@@ -70,7 +86,9 @@ export default function ExercisesClient() {
       setExercises(exercises.filter((e) => e.id !== exerciseId))
     } catch (err) {
       console.error('Error deleting exercise:', err)
-      alert('Failed to delete exercise')
+      // TODO: Replace with toast notification
+    } finally {
+      setConfirmationLoading(false)
     }
   }
 
@@ -238,6 +256,20 @@ export default function ExercisesClient() {
           </div>
         )}
       </div>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmationState.isOpen}
+        onClose={hideConfirmation}
+        onConfirm={confirmationState.onConfirm}
+        title={confirmationState.title}
+        message={confirmationState.message}
+        confirmText={confirmationState.confirmText}
+        cancelText={confirmationState.cancelText}
+        confirmVariant={confirmationState.confirmVariant}
+        icon={confirmationState.icon}
+        loading={confirmationState.loading}
+      />
     </div>
   )
 }

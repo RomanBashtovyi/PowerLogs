@@ -18,6 +18,7 @@ model User {
 
   workouts   Workout[]
   exercises  Exercise[]
+  exerciseTracking UserExerciseTracking[]
 
   @@map("users")
 }
@@ -32,11 +33,13 @@ model Exercise {
   category         String           // 'strength' | 'cardio' | 'flexibility' | 'sport'
   imageUrl         String?
   isCustom         Boolean          @default(false)
+  isTrackedByDefault Boolean        @default(false) // For base exercises auto-tracking
   userId           String?
   createdAt        DateTime         @default(now())
 
   user             User?            @relation(fields: [userId], references: [id])
   workoutExercises WorkoutExercise[]
+  userTracking     UserExerciseTracking[]
 
   @@map("exercises")
 }
@@ -86,4 +89,19 @@ model Set {
   workoutExercise    WorkoutExercise @relation(fields: [workoutExerciseId], references: [id], onDelete: Cascade)
 
   @@map("sets")
+}
+
+model UserExerciseTracking {
+  id         String   @id @default(cuid())
+  userId     String
+  exerciseId String
+  isTracked  Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, exerciseId])
+  @@map("user_exercise_tracking")
 }

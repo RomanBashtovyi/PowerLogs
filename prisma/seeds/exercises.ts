@@ -13,6 +13,7 @@ export const exercisesSeedData = [
     equipment: 'Штанга',
     category: 'strength' as const,
     isCustom: false,
+    isTrackedByDefault: true, // Base exercise for tracking
   },
   {
     name: 'Squat',
@@ -23,6 +24,7 @@ export const exercisesSeedData = [
     equipment: 'Штанга',
     category: 'strength' as const,
     isCustom: false,
+    isTrackedByDefault: true, // Base exercise for tracking
   },
   {
     name: 'Deadlift',
@@ -33,6 +35,7 @@ export const exercisesSeedData = [
     equipment: 'Штанга',
     category: 'strength' as const,
     isCustom: false,
+    isTrackedByDefault: true, // Base exercise for tracking
   },
   {
     name: 'Pull-up',
@@ -43,6 +46,7 @@ export const exercisesSeedData = [
     equipment: 'Власна вага',
     category: 'strength' as const,
     isCustom: false,
+    isTrackedByDefault: true, // Base exercise for tracking
   },
   {
     name: 'Push-up',
@@ -73,6 +77,7 @@ export const exercisesSeedData = [
     equipment: 'Штанга',
     category: 'strength' as const,
     isCustom: false,
+    isTrackedByDefault: true, // Base exercise for tracking
   },
   {
     name: 'Barbell Curl',

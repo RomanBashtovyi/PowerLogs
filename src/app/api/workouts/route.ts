@@ -40,10 +40,7 @@ export async function GET(request: NextRequest) {
       userId: user.id,
       isTemplate,
       ...(search && {
-        OR: [
-          { name: { contains: search, mode: 'insensitive' as const } },
-          { description: { contains: search, mode: 'insensitive' as const } },
-        ],
+        OR: [{ name: { contains: search } }, { description: { contains: search } }],
       }),
     }
 
