@@ -18,49 +18,77 @@ const exerciseSchema = z.object({
 
 // GET /api/exercises - Get exercises (system + user's custom)
 export async function GET(request: NextRequest) {
+  console.log('=== GET /api/exercises called ===')
   try {
     const session = await getServerSession(authOptions)
+    console.log('Session:', session ? 'exists' : 'null', session?.user?.email)
+    
     if (!session?.user?.email) {
+      console.log('No session or email found')
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
     })
+    console.log('User found:', user ? user.id : 'not found')
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
     const { searchParams } = new URL(request.url)
-    const limit = parseInt(searchParams.get('limit') || '20')
+    const limit = parseInt(searchParams.get('limit') || '50')
     const offset = parseInt(searchParams.get('offset') || '0')
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category') || ''
     const muscleGroup = searchParams.get('muscleGroup') || ''
 
-    const where = {
+    let where: any = {
       OR: [
         { isCustom: false }, // System exercises
         { isCustom: true, userId: user.id }, // User's custom exercises
       ],
-      ...(search && {
-        OR: [
-          { name: { contains: search, mode: 'insensitive' as const } },
-          { description: { contains: search, mode: 'insensitive' as const } },
+    }
+
+    // Add additional filters only if they exist
+    if (search || category || muscleGroup) {
+      where = {
+        AND: [
+          {
+            OR: [
+              { isCustom: false }, // System exercises
+              { isCustom: true, userId: user.id }, // User's custom exercises
+            ],
+          },
         ],
-      }),
-      ...(category && { category }),
-      ...(muscleGroup && {
-        muscleGroups: { contains: muscleGroup, mode: 'insensitive' as const },
-      }),
+      }
+
+      if (search) {
+        where.AND.push({
+          OR: [
+            { name: { contains: search } },
+            { description: { contains: search } },
+          ],
+        })
+      }
+
+      if (category) {
+        where.AND.push({ category })
+      }
+
+      if (muscleGroup) {
+        where.AND.push({
+          muscleGroups: { contains: muscleGroup },
+        })
+      }
     }
 
     const [exercises, total] = await Promise.all([
       prisma.exercise.findMany({
         where,
         orderBy: [
-          { isCustom: 'asc' }, // System exercises first
+          { isCustom: 'desc' }, // Custom exercises first
           { name: 'asc' },
         ],
         skip: offset,
@@ -68,6 +96,8 @@ export async function GET(request: NextRequest) {
       }),
       prisma.exercise.count({ where }),
     ])
+
+    console.log('API: Found', total, 'total exercises,', exercises.filter(e => e.isCustom).length, 'custom')
 
     return NextResponse.json({
       exercises,

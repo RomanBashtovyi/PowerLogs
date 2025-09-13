@@ -115,6 +115,7 @@ export default function ExerciseForm({ exercise, onSubmit, onCancel, isLoading }
         // Redirect after showing success message
         setTimeout(() => {
           router.push('/exercises')
+          router.refresh() // Force refresh to reload exercises
         }, 1500)
       }
     } catch (error) {

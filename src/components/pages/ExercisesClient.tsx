@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useLanguage } from '@/components/providers'
 import { Button } from '@/components/ui/button'
 import { ExerciseCard } from '@/components/features/exercise'
@@ -10,6 +11,7 @@ import { EXERCISE_CATEGORIES, MUSCLE_GROUPS } from '@/constants/categories'
 
 export default function ExercisesClient() {
   const { t } = useLanguage()
+  const pathname = usePathname()
   const [exercises, setExercises] = useState<Exercise[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -20,6 +22,13 @@ export default function ExercisesClient() {
   useEffect(() => {
     fetchExercises()
   }, [selectedCategory, selectedMuscleGroup])
+
+  // Refetch exercises when returning to the page
+  useEffect(() => {
+    if (pathname === '/exercises') {
+      fetchExercises()
+    }
+  }, [pathname])
 
   const fetchExercises = async () => {
     try {
