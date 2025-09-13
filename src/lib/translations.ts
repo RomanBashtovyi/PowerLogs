@@ -112,6 +112,19 @@ export const translations = {
     profile: 'Профіль',
     signOut: 'Вийти',
 
+    // Template actions
+    useTemplate: 'Використати шаблон',
+    useTemplateConfirm: 'Використати шаблон',
+    forTodaysWorkout: 'для сьогоднішнього тренування',
+    yes: 'Так',
+    no: 'Ні',
+
+    // Delete confirmations
+    deleteExercise: 'Видалити вправу',
+    deleteExerciseConfirm: 'Ви впевнені, що хочете видалити цю вправу? Цю дію неможливо скасувати.',
+    deleteWorkout: 'Видалити тренування',
+    deleteWorkoutConfirm: 'Ви впевнені, що хочете видалити тренування',
+
     // Dashboard
     welcomeBack: 'Ласкаво просимо',
     trackFitness: 'Відслідковуйте свій фітнес прогрес',
@@ -205,7 +218,6 @@ export const translations = {
     workoutNotes: 'Нотатки',
     createWorkout: 'Створити тренування',
     editWorkout: 'Редагувати тренування',
-    deleteWorkout: 'Видалити тренування',
     noWorkouts: 'Немає тренувань',
     addFirstWorkout: 'Додайте своє перше тренування',
     workoutCreated: 'Тренування створено',
@@ -214,6 +226,9 @@ export const translations = {
     recentWorkouts: 'Останні тренування',
     allWorkouts: 'Всі тренування',
     workoutTemplates: 'Шаблони тренувань',
+    saveAsTemplate: 'Зберегти як шаблон',
+    enterTemplateName: 'Введіть назву для шаблону тренування:',
+    templateNamePlaceholder: 'Назва шаблону',
     selectExercise: 'Вибрати вправу',
     addExercise: 'Додати вправу',
     removeExercise: 'Видалити вправу',
@@ -234,12 +249,50 @@ export const translations = {
     // Exercise form
     exerciseNameRequired: "Назва вправи обов'язкова",
     atLeastOneMuscleGroup: "Потрібно вибрати хоча б одну групу м'язів",
+    fieldRequired: "Це поле обов'язкове",
     exerciseCreatedSuccess: 'Вправа успішно створена!',
     exerciseUpdatedSuccess: 'Вправа успішно оновлена!',
     failedToSaveExercise: 'Не вдалося зберегти вправу. Спробуйте ще раз.',
     createExerciseButton: 'Створити вправу',
     updateExerciseButton: 'Оновити вправу',
     noEquipment: 'Без обладнання',
+
+    // Personal Records
+    personalRecord: 'Персональний рекорд (1RM)',
+    setPR: 'Встановити PR',
+    update: 'Оновити',
+    setOn: 'Встановлено',
+    noPRSet: 'Персональний рекорд не встановлено',
+    setPRHelp: 'Встановіть ваш 1RM для використання відсоткового програмування',
+    updatePersonalRecord: 'Оновити персональний рекорд',
+    setPersonalRecord: 'Встановити персональний рекорд',
+    enter1RM: 'Введіть ваш одноповторний максимум (1RM) для цієї вправи:',
+    weightInKg: 'Вага у кг',
+
+    // Set Form
+    loadType: 'Тип навантаження',
+    absoluteWeight: 'Абсолютна вага',
+    percentageOf1RM: 'Відсоток від 1RM',
+    enterPercentage: 'Введіть відсоток',
+    weightCalculatedFromPR: 'Вага буде розрахована на основі вашого персонального рекорду для цієї вправи',
+
+    // Personal Record Modal
+    setPRDescription: 'Встановіть ваш одноповторний максимум для відсоткового програмування',
+    setPRRepsDescription: 'Встановіть ваш максимум повторів для цієї вправи',
+    recordType: 'Тип рекорду',
+    weightBased: 'На основі ваги (1RM)',
+    repsBased: 'На основі повторів (макс повтори)',
+    maxReps: 'Макс повтори',
+    enterMaxReps: 'Введіть максимальну кількість повторів',
+    howToSetPR: 'Як ви хочете встановити ваш 1RM?',
+    enterDirectly: 'Ввести 1RM безпосередньо',
+    calculateFromSet: 'Розрахувати з ваги × повторів',
+    oneRepMax: '1RM',
+    enterWeight: 'Введіть вагу',
+    enterReps: 'Введіть повтори',
+    estimated1RM: 'Оціночний 1RM',
+    epleyFormula: 'Розраховано за формулою Епли',
+    saving: 'Збереження...',
 
     // Landing page
     appTitle: 'PowerLogs',
@@ -256,6 +309,19 @@ export const translations = {
     templates: 'Templates',
     profile: 'Profile',
     signOut: 'Sign Out',
+
+    // Template actions
+    useTemplate: 'Use Template',
+    useTemplateConfirm: 'Use template',
+    forTodaysWorkout: "for today's workout",
+    yes: 'Yes',
+    no: 'No',
+
+    // Delete confirmations
+    deleteExercise: 'Delete Exercise',
+    deleteExerciseConfirm: 'Are you sure you want to delete this exercise? This action cannot be undone.',
+    deleteWorkout: 'Delete Workout',
+    deleteWorkoutConfirm: 'Are you sure you want to delete the workout',
 
     // Dashboard
     welcomeBack: 'Welcome back',
@@ -341,7 +407,6 @@ export const translations = {
     workoutNotes: 'Notes',
     createWorkout: 'Create Workout',
     editWorkout: 'Edit Workout',
-    deleteWorkout: 'Delete Workout',
     noWorkouts: 'No workouts',
     addFirstWorkout: 'Add your first workout',
     workoutCreated: 'Workout created',
@@ -350,16 +415,57 @@ export const translations = {
     recentWorkouts: 'Recent workouts',
     allWorkouts: 'All workouts',
     workoutTemplates: 'Workout templates',
+    saveAsTemplate: 'Save as Template',
+    enterTemplateName: 'Enter a name for your workout template:',
+    templateNamePlaceholder: 'Template name',
 
     // Exercise form
     exerciseNameRequired: 'Exercise name is required',
     atLeastOneMuscleGroup: 'At least one muscle group is required',
+    fieldRequired: 'This field is required',
     exerciseCreatedSuccess: 'Exercise created successfully!',
     exerciseUpdatedSuccess: 'Exercise updated successfully!',
     failedToSaveExercise: 'Failed to save exercise. Please try again.',
     createExerciseButton: 'Create Exercise',
     updateExerciseButton: 'Update Exercise',
     noEquipment: 'No equipment',
+
+    // Personal Records
+    personalRecord: 'Personal Record (1RM)',
+    setPR: 'Set PR',
+    update: 'Update',
+    setOn: 'Set on',
+    noPRSet: 'No personal record set',
+    setPRHelp: 'Set your 1RM to use percentage-based programming',
+    updatePersonalRecord: 'Update Personal Record',
+    setPersonalRecord: 'Set Personal Record',
+    enter1RM: 'Enter your one-rep max (1RM) for this exercise:',
+    weightInKg: 'Weight in kg',
+
+    // Set Form
+    loadType: 'Load Type',
+    absoluteWeight: 'Absolute Weight',
+    percentageOf1RM: 'Percentage of 1RM',
+    enterPercentage: 'Enter percentage',
+    weightCalculatedFromPR: 'Weight will be calculated based on your personal record for this exercise',
+
+    // Personal Record Modal
+    setPRDescription: 'Set your one-rep max for percentage-based programming',
+    setPRRepsDescription: 'Set your maximum reps for this exercise',
+    recordType: 'Record Type',
+    weightBased: 'Weight-based (1RM)',
+    repsBased: 'Reps-based (max reps)',
+    maxReps: 'Max Reps',
+    enterMaxReps: 'Enter max reps',
+    howToSetPR: 'How would you like to set your 1RM?',
+    enterDirectly: 'Enter 1RM directly',
+    calculateFromSet: 'Calculate from weight × reps',
+    oneRepMax: '1RM',
+    enterWeight: 'Enter weight',
+    enterReps: 'Enter reps',
+    estimated1RM: 'Estimated 1RM',
+    epleyFormula: 'Calculated using Epley formula',
+    saving: 'Saving...',
 
     // Landing page
     appTitle: 'PowerLogs',

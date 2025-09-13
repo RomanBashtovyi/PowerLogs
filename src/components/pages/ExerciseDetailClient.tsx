@@ -7,6 +7,9 @@ import Image from 'next/image'
 import { useLanguage } from '@/components/providers'
 import { Button } from '@/components/ui/button'
 import { ExerciseForm } from '@/components/features/exercise'
+import { ToastContainer, useToast } from '@/components/ui/Toast'
+import ConfirmationModal from '@/components/ui/ConfirmationModal'
+import { useConfirmation } from '@/hooks/useConfirmation'
 import { Exercise } from '@/types/workout'
 import { EXERCISE_CATEGORIES, MUSCLE_GROUPS } from '@/constants/categories'
 import { getTranslatedExercise } from '@/lib/translations'
@@ -18,6 +21,8 @@ interface ExerciseDetailClientProps {
 export default function ExerciseDetailClient({ exerciseId }: ExerciseDetailClientProps) {
   const { t, language } = useLanguage()
   const router = useRouter()
+  const { toasts, removeToast, showError } = useToast()
+  const { confirmationState, showConfirmation, hideConfirmation } = useConfirmation()
   const [exercise, setExercise] = useState<Exercise | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -73,10 +78,20 @@ export default function ExerciseDetailClient({ exerciseId }: ExerciseDetailClien
   }
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this exercise? This action cannot be undone.')) {
-      return
-    }
+    const confirmed = await showConfirmation({
+      title: t('deleteExercise') || 'Delete Exercise',
+      message:
+        t('deleteExerciseConfirm') || 'Are you sure you want to delete this exercise? This action cannot be undone.',
+      confirmText: t('delete') || 'Delete',
+      cancelText: t('cancel') || 'Cancel',
+    })
 
+    if (confirmed) {
+      executeDelete()
+    }
+  }
+
+  const executeDelete = async () => {
     try {
       setIsDeleting(true)
       const response = await fetch(`/api/exercises/${exerciseId}`, {
@@ -90,7 +105,7 @@ export default function ExerciseDetailClient({ exerciseId }: ExerciseDetailClien
       router.push('/exercises')
     } catch (err) {
       console.error('Error deleting exercise:', err)
-      alert('Failed to delete exercise')
+      showError('Failed to delete exercise')
     } finally {
       setIsDeleting(false)
     }
@@ -297,6 +312,20 @@ export default function ExerciseDetailClient({ exerciseId }: ExerciseDetailClien
           </Link>
         </div>
       </div>
+
+      {/* Toast Notifications */}
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmationState.isOpen}
+        title={confirmationState.title}
+        message={confirmationState.message}
+        confirmText={confirmationState.confirmText}
+        cancelText={confirmationState.cancelText}
+        onConfirm={confirmationState.onConfirm}
+        onClose={hideConfirmation}
+      />
     </div>
   )
 }

@@ -39,13 +39,37 @@ export interface WorkoutExercise {
 export interface Set {
   id: string
   workoutExerciseId: string
-  weight: number
+  weight?: number | null
   reps: number
   rpe?: number | null
   isWarmup: boolean
   completed: boolean
   order: number
   restTime?: number | null
+
+  // Percentage-based loading for templates
+  isPercentageBased: boolean
+  percentageOf1RM?: number | null
+}
+
+export interface PersonalRecord {
+  id: string
+  userId: string
+  exerciseId: string
+  recordType: 'weight' | 'reps'
+
+  // For weight-based records (1RM)
+  oneRepMax?: number | null
+  unit: 'kg' | 'lbs'
+
+  // For rep-based records (max reps)
+  maxReps?: number | null
+
+  dateSet: Date
+  notes?: string | null
+  createdAt: Date
+  updatedAt: Date
+  exercise?: Exercise
 }
 
 export type ExerciseCategory = 'strength' | 'cardio' | 'flexibility' | 'sport'
@@ -59,10 +83,12 @@ export interface WorkoutFormData {
   exercises: {
     exerciseId: string
     sets: {
-      weight: number
+      weight?: number
       reps: number
       rpe?: number
       isWarmup: boolean
+      isPercentageBased?: boolean
+      percentageOf1RM?: number
     }[]
   }[]
 }

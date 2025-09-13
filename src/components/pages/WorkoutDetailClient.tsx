@@ -8,12 +8,14 @@ import { uk, enUS } from 'date-fns/locale'
 import { useLanguage } from '@/components/providers'
 import { Button } from '@/components/ui/button'
 import { WorkoutForm, ExerciseSelector, SetForm } from '@/components/features/workout'
-import { ExerciseCard } from '@/components/features/exercise'
+import { ExerciseCard, PersonalRecordManager } from '@/components/features/exercise'
 import ConfirmationModal from '@/components/ui/ConfirmationModal'
+import InputModal from '@/components/ui/InputModal'
 import { ToastContainer, useToast } from '@/components/ui/Toast'
-import { Workout, Exercise, WorkoutExercise, Set } from '@/types/workout'
+import { Workout, Exercise, WorkoutExercise, Set, PersonalRecord } from '@/types/workout'
 import { getTranslatedExercise } from '@/lib/translations'
 import { useConfirmation } from '@/hooks/useConfirmation'
+import { formatWeightDisplay } from '@/utils/percentage-calculations'
 
 interface WorkoutDetailClientProps {
   workoutId: string
@@ -40,10 +42,14 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
   const [showSetForm, setShowSetForm] = useState(false)
   const [editingSet, setEditingSet] = useState<{ exerciseId: string; set?: Set } | null>(null)
   const [setFormLoading, setSetFormLoading] = useState(false)
+  const [showTemplateModal, setShowTemplateModal] = useState(false)
+  const [templateSaving, setTemplateSaving] = useState(false)
+  const [personalRecords, setPersonalRecords] = useState<Record<string, PersonalRecord>>({})
 
   useEffect(() => {
     fetchWorkout()
     fetchWorkoutExercises()
+    fetchPersonalRecords()
   }, [workoutId])
 
   const fetchWorkout = async () => {
@@ -84,6 +90,23 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
       console.error('Error fetching workout exercises:', err)
     } finally {
       setExercisesLoading(false)
+    }
+  }
+
+  const fetchPersonalRecords = async () => {
+    try {
+      const response = await fetch('/api/personal-records')
+
+      if (response.ok) {
+        const records = await response.json()
+        const recordsMap: Record<string, PersonalRecord> = {}
+        records.forEach((record: PersonalRecord) => {
+          recordsMap[record.exerciseId] = record
+        })
+        setPersonalRecords(recordsMap)
+      }
+    } catch (error) {
+      console.error('Error fetching personal records:', error)
     }
   }
 
@@ -312,6 +335,67 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
     setEditingSet(null)
   }
 
+  // Template management functions
+  const handleSaveAsTemplate = () => {
+    if (!workout) return
+    setShowTemplateModal(true)
+  }
+
+  const handleConfirmSaveAsTemplate = async (templateName: string) => {
+    if (!workout) return
+
+    try {
+      setTemplateSaving(true)
+      const response = await fetch('/api/templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          workoutId: workout.id,
+          name: templateName,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to create template')
+      }
+
+      setShowTemplateModal(false)
+      showSuccess('Template created successfully')
+    } catch (err) {
+      console.error('Error creating template:', err)
+      showError(err instanceof Error ? err.message : 'Failed to create template')
+    } finally {
+      setTemplateSaving(false)
+    }
+  }
+
+  const handleConvertToTemplate = async () => {
+    if (!workout) return
+
+    try {
+      const response = await fetch(`/api/workouts/${workout.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          isTemplate: true,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to convert to template')
+      }
+
+      showSuccess('Workout converted to template')
+      // Refresh workout data
+      await fetchWorkout()
+    } catch (err) {
+      console.error('Error converting to template:', err)
+      showError(err instanceof Error ? err.message : 'Failed to convert to template')
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background pb-20 md:pb-6">
@@ -379,10 +463,23 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
           </div>
 
           {/* Actions */}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button variant="outline" onClick={() => setIsEditing(true)}>
               ✏️ {t('edit')}
             </Button>
+
+            {!workout.isTemplate && (
+              <Button variant="outline" onClick={handleSaveAsTemplate}>
+                📋 Save as Template
+              </Button>
+            )}
+
+            {workout.isTemplate && (
+              <Button variant="outline" onClick={() => (window.location.href = '/templates')}>
+                📋 Manage Templates
+              </Button>
+            )}
+
             <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
               {isDeleting ? t('loading') : `🗑️ ${t('delete')}`}
             </Button>
@@ -489,6 +586,30 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
                         </Button>
                       </div>
 
+                      {/* Personal Record Manager - show for templates and strength exercises */}
+                      {(workout?.isTemplate || workoutExercise.exercise?.category === 'strength') &&
+                        workoutExercise.exercise && (
+                          <div className="mb-4">
+                            <PersonalRecordManager
+                              exercise={workoutExercise.exercise}
+                              onRecordUpdated={(record) => {
+                                if (record) {
+                                  setPersonalRecords((prev) => ({
+                                    ...prev,
+                                    [workoutExercise.exerciseId]: record,
+                                  }))
+                                } else {
+                                  setPersonalRecords((prev) => {
+                                    const newRecords = { ...prev }
+                                    delete newRecords[workoutExercise.exerciseId]
+                                    return newRecords
+                                  })
+                                }
+                              }}
+                            />
+                          </div>
+                        )}
+
                       {/* Sets */}
                       <div className="mt-3">
                         <div className="flex items-center justify-between mb-2">
@@ -510,7 +631,8 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
                                 <span className="w-8 text-center text-muted-foreground">{setIndex + 1}</span>
                                 <div className="flex-1">
                                   <span className="text-foreground">
-                                    {set.weight}kg × {set.reps} reps
+                                    {formatWeightDisplay(set, personalRecords[workoutExercise.exerciseId])} × {set.reps}{' '}
+                                    reps
                                   </span>
                                   {set.rpe && <span className="text-muted-foreground ml-2">RPE {set.rpe}</span>}
                                   {set.restTime && (
@@ -584,6 +706,20 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
           isLoading={setFormLoading}
         />
       )}
+
+      {/* Template Name Input Modal */}
+      <InputModal
+        isOpen={showTemplateModal}
+        onClose={() => setShowTemplateModal(false)}
+        onConfirm={handleConfirmSaveAsTemplate}
+        title={t('saveAsTemplate') || 'Save as Template'}
+        message={t('enterTemplateName') || 'Enter a name for your workout template:'}
+        placeholder={t('templateNamePlaceholder') || 'Template name'}
+        defaultValue={workout ? `${workout.name} Template` : ''}
+        confirmText={t('save') || 'Save'}
+        loading={templateSaving}
+        icon="📋"
+      />
 
       {/* Confirmation Modal */}
       <ConfirmationModal

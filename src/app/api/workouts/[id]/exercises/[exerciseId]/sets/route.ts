@@ -4,14 +4,31 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
-const setCreateSchema = z.object({
-  weight: z.number().min(0, 'Weight must be non-negative'),
-  reps: z.number().min(1, 'Reps must be at least 1'),
-  rpe: z.number().min(1).max(10).nullable().optional(),
-  isWarmup: z.boolean().default(false),
-  completed: z.boolean().default(false),
-  restTime: z.number().min(0).nullable().optional(),
-})
+const setCreateSchema = z
+  .object({
+    weight: z.number().min(0, 'Weight must be non-negative').nullable().optional(),
+    reps: z.number().min(1, 'Reps must be at least 1'),
+    rpe: z.number().min(1).max(10).nullable().optional(),
+    isWarmup: z.boolean().default(false),
+    completed: z.boolean().default(false),
+    restTime: z.number().min(0).nullable().optional(),
+    isPercentageBased: z.boolean().default(false),
+    percentageOf1RM: z.number().min(1).max(200, 'Percentage must be between 1% and 200%').nullable().optional(),
+  })
+  .refine(
+    (data) => {
+      // Either weight OR percentage must be provided
+      if (data.isPercentageBased) {
+        return data.percentageOf1RM !== null && data.percentageOf1RM !== undefined
+      } else {
+        return data.weight !== null && data.weight !== undefined
+      }
+    },
+    {
+      message: 'Either weight or percentage of 1RM must be provided',
+      path: ['weight'],
+    }
+  )
 
 interface RouteParams {
   params: {

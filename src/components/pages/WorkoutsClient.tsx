@@ -5,10 +5,15 @@ import Link from 'next/link'
 import { useLanguage } from '@/components/providers'
 import { Button } from '@/components/ui/button'
 import { WorkoutCard } from '@/components/features/workout'
+import { ToastContainer, useToast } from '@/components/ui/Toast'
+import ConfirmationModal from '@/components/ui/ConfirmationModal'
+import { useConfirmation } from '@/hooks/useConfirmation'
 import { Workout } from '@/types/workout'
 
 export default function WorkoutsClient() {
   const { t } = useLanguage()
+  const { toasts, removeToast, showError } = useToast()
+  const { confirmationState, showConfirmation, hideConfirmation } = useConfirmation()
   const [workouts, setWorkouts] = useState<Workout[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -38,10 +43,20 @@ export default function WorkoutsClient() {
   }
 
   const handleDeleteWorkout = async (workoutId: string) => {
-    if (!confirm('Are you sure you want to delete this workout?')) {
-      return
-    }
+    const workout = workouts.find((w) => w.id === workoutId)
+    const confirmed = await showConfirmation({
+      title: t('deleteWorkout') || 'Delete Workout',
+      message: `${t('deleteWorkoutConfirm') || 'Are you sure you want to delete the workout'} "${workout?.name || ''}"?`,
+      confirmText: t('delete') || 'Delete',
+      cancelText: t('cancel') || 'Cancel',
+    })
 
+    if (confirmed) {
+      executeDeleteWorkout(workoutId)
+    }
+  }
+
+  const executeDeleteWorkout = async (workoutId: string) => {
     try {
       const response = await fetch(`/api/workouts/${workoutId}`, {
         method: 'DELETE',
@@ -54,7 +69,7 @@ export default function WorkoutsClient() {
       setWorkouts(workouts.filter((w) => w.id !== workoutId))
     } catch (err) {
       console.error('Error deleting workout:', err)
-      alert('Failed to delete workout')
+      showError('Failed to delete workout')
     }
   }
 
@@ -141,6 +156,20 @@ export default function WorkoutsClient() {
           </div>
         )}
       </div>
+
+      {/* Toast Notifications */}
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmationState.isOpen}
+        title={confirmationState.title}
+        message={confirmationState.message}
+        confirmText={confirmationState.confirmText}
+        cancelText={confirmationState.cancelText}
+        onConfirm={confirmationState.onConfirm}
+        onClose={hideConfirmation}
+      />
     </div>
   )
 }

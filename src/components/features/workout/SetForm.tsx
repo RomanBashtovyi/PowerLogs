@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useLanguage } from '@/components/providers'
 import { Button } from '@/components/ui/button'
 import { Set } from '@/types/workout'
 
@@ -12,6 +13,7 @@ interface SetFormProps {
 }
 
 export default function SetForm({ set, onSubmit, onCancel, isLoading }: SetFormProps) {
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     weight: set?.weight ? set.weight.toString() : '',
     reps: set?.reps ? set.reps.toString() : '',
@@ -20,6 +22,8 @@ export default function SetForm({ set, onSubmit, onCancel, isLoading }: SetFormP
     completed: set?.completed || false,
     restTime: set?.restTime ? set.restTime.toString() : '',
     numSets: '1', // Number of sets to create (only for new sets)
+    isPercentageBased: set?.isPercentageBased || false,
+    percentageOf1RM: set?.percentageOf1RM ? set.percentageOf1RM.toString() : '',
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -32,10 +36,19 @@ export default function SetForm({ set, onSubmit, onCancel, isLoading }: SetFormP
     const rpe = formData.rpe ? parseInt(formData.rpe) : null
     const restTime = formData.restTime ? parseInt(formData.restTime) : null
     const numSets = parseInt(formData.numSets)
+    const percentage = parseFloat(formData.percentageOf1RM)
 
-    if (!formData.weight || isNaN(weight) || weight < 0) {
-      newErrors.weight = 'Weight must be a positive number'
+    // Validate weight or percentage (one must be provided)
+    if (formData.isPercentageBased) {
+      if (!formData.percentageOf1RM || isNaN(percentage) || percentage < 1 || percentage > 200) {
+        newErrors.percentageOf1RM = 'Percentage must be between 1% and 200%'
+      }
+    } else {
+      if (!formData.weight || isNaN(weight) || weight < 0) {
+        newErrors.weight = 'Weight must be a positive number'
+      }
     }
+
     if (!formData.reps || isNaN(reps) || reps < 1) {
       newErrors.reps = 'Reps must be at least 1'
     }
@@ -57,12 +70,14 @@ export default function SetForm({ set, onSubmit, onCancel, isLoading }: SetFormP
     e.preventDefault()
     if (validate()) {
       const setData = {
-        weight: parseFloat(formData.weight),
+        weight: formData.isPercentageBased ? null : parseFloat(formData.weight),
         reps: parseInt(formData.reps),
         rpe: formData.rpe && formData.rpe.trim() !== '' ? parseInt(formData.rpe) : null,
         isWarmup: formData.isWarmup,
         completed: formData.completed,
         restTime: formData.restTime && formData.restTime.trim() !== '' ? parseInt(formData.restTime) : null,
+        isPercentageBased: formData.isPercentageBased,
+        percentageOf1RM: formData.isPercentageBased ? parseFloat(formData.percentageOf1RM) : null,
         numSets: set ? 1 : parseInt(formData.numSets), // Only relevant for new sets
       }
       console.log('Submitting set data:', setData)
@@ -84,20 +99,71 @@ export default function SetForm({ set, onSubmit, onCancel, isLoading }: SetFormP
         <h3 className="text-lg font-semibold mb-4">{set ? 'Edit Set' : 'Add New Set'}</h3>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Weight */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Weight (kg) *</label>
-            <input
-              type="number"
-              step="0.5"
-              min="0"
-              value={formData.weight}
-              onChange={(e) => handleChange('weight', e.target.value)}
-              className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground placeholder:text-muted-foreground"
-              placeholder="Enter weight"
-            />
-            {errors.weight && <p className="text-red-500 text-sm mt-1">{errors.weight}</p>}
+          {/* Load Type Toggle */}
+          <div className="space-y-3">
+            <label className="block text-sm font-medium text-foreground">{t('loadType') || 'Load Type'} *</label>
+            <div className="flex space-x-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="loadType"
+                  checked={!formData.isPercentageBased}
+                  onChange={() => handleChange('isPercentageBased', false)}
+                  className="rounded border-input bg-background text-primary focus:ring-primary"
+                />
+                <span className="text-sm text-foreground">{t('absoluteWeight') || 'Absolute Weight'}</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="loadType"
+                  checked={formData.isPercentageBased}
+                  onChange={() => handleChange('isPercentageBased', true)}
+                  className="rounded border-input bg-background text-primary focus:ring-primary"
+                />
+                <span className="text-sm text-foreground">{t('percentageOf1RM') || '% of 1RM'}</span>
+              </label>
+            </div>
           </div>
+
+          {/* Weight or Percentage */}
+          {formData.isPercentageBased ? (
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Percentage of 1RM *</label>
+              <div className="relative">
+                <input
+                  type="number"
+                  step="1"
+                  min="1"
+                  max="200"
+                  value={formData.percentageOf1RM}
+                  onChange={(e) => handleChange('percentageOf1RM', e.target.value)}
+                  className="w-full px-3 py-2 pr-8 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground placeholder:text-muted-foreground"
+                  placeholder="Enter percentage"
+                />
+                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">%</span>
+              </div>
+              {errors.percentageOf1RM && <p className="text-red-500 text-sm mt-1">{errors.percentageOf1RM}</p>}
+              <p className="text-xs text-muted-foreground mt-1">
+                {t('weightCalculatedFromPR') ||
+                  'Weight will be calculated based on your personal record for this exercise'}
+              </p>
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Weight (kg) *</label>
+              <input
+                type="number"
+                step="0.5"
+                min="0"
+                value={formData.weight}
+                onChange={(e) => handleChange('weight', e.target.value)}
+                className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground placeholder:text-muted-foreground"
+                placeholder="Enter weight"
+              />
+              {errors.weight && <p className="text-red-500 text-sm mt-1">{errors.weight}</p>}
+            </div>
+          )}
 
           {/* Reps */}
           <div>

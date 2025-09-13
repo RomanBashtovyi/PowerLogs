@@ -27,6 +27,7 @@ export default function Navigation() {
   const navItems = [
     { href: '/dashboard', label: t('dashboard'), icon: '📊' },
     { href: '/workouts', label: t('workouts'), icon: '🏋️' },
+    { href: '/templates', label: 'Templates', icon: '📋' },
     { href: '/exercises', label: t('exercises'), icon: '💪' },
     { href: '/dashboard/progress-tracking', label: t('progressTracking'), icon: '📈' },
   ]
