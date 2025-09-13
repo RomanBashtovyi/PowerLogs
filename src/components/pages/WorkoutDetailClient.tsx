@@ -7,10 +7,11 @@ import { format } from 'date-fns'
 import { uk, enUS } from 'date-fns/locale'
 import { useLanguage } from '@/components/providers'
 import { Button } from '@/components/ui/button'
-import { WorkoutForm, ExerciseSelector } from '@/components/features/workout'
+import { WorkoutForm, ExerciseSelector, SetForm } from '@/components/features/workout'
 import { ExerciseCard } from '@/components/features/exercise'
 import ConfirmationModal from '@/components/ui/ConfirmationModal'
-import { Workout, Exercise, WorkoutExercise } from '@/types/workout'
+import { ToastContainer, useToast } from '@/components/ui/Toast'
+import { Workout, Exercise, WorkoutExercise, Set } from '@/types/workout'
 import { getTranslatedExercise } from '@/lib/translations'
 import { useConfirmation } from '@/hooks/useConfirmation'
 
@@ -21,6 +22,7 @@ interface WorkoutDetailClientProps {
 export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientProps) {
   const { t, language } = useLanguage()
   const router = useRouter()
+  const { toasts, removeToast, showSuccess, showError } = useToast()
   const {
     confirmationState,
     showConfirmation,
@@ -35,6 +37,9 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
   const [isEditing, setIsEditing] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [showExerciseSelector, setShowExerciseSelector] = useState(false)
+  const [showSetForm, setShowSetForm] = useState(false)
+  const [editingSet, setEditingSet] = useState<{ exerciseId: string; set?: Set } | null>(null)
+  const [setFormLoading, setSetFormLoading] = useState(false)
 
   useEffect(() => {
     fetchWorkout()
@@ -206,6 +211,105 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
       return `${hours}h ${mins}m`
     }
     return `${mins}m`
+  }
+
+  // Set management functions
+  const handleAddSet = (exerciseId: string) => {
+    setEditingSet({ exerciseId })
+    setShowSetForm(true)
+  }
+
+  const handleEditSet = (exerciseId: string, set: Set) => {
+    setEditingSet({ exerciseId, set })
+    setShowSetForm(true)
+  }
+
+  const handleDeleteSet = async (exerciseId: string, setId: string) => {
+    try {
+      const response = await fetch(`/api/workouts/${workoutId}/exercises/${exerciseId}/sets/${setId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete set')
+      }
+
+      // Refresh workout exercises to get updated sets
+      await fetchWorkoutExercises()
+      showSuccess('Set deleted successfully')
+    } catch (err) {
+      console.error('Error deleting set:', err)
+      showError('Failed to delete set')
+    }
+  }
+
+  const handleSetSubmit = async (setData: Omit<Set, 'id' | 'workoutExerciseId' | 'order'> & { numSets?: number }) => {
+    if (!editingSet) return
+
+    try {
+      setSetFormLoading(true)
+      const { exerciseId, set } = editingSet
+
+      if (set) {
+        // Update existing set
+        const { numSets, ...updateData } = setData
+        const response = await fetch(`/api/workouts/${workoutId}/exercises/${exerciseId}/sets/${set.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updateData),
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Failed to update set')
+        }
+      } else {
+        // Create new set(s)
+        const { numSets = 1, ...createData } = setData
+
+        // Create multiple sets if numSets > 1
+        const promises = []
+        for (let i = 0; i < numSets; i++) {
+          promises.push(
+            fetch(`/api/workouts/${workoutId}/exercises/${exerciseId}/sets`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(createData),
+            })
+          )
+        }
+
+        const responses = await Promise.all(promises)
+
+        for (const response of responses) {
+          if (!response.ok) {
+            const errorData = await response.json()
+            throw new Error(errorData.error || 'Failed to create set')
+          }
+        }
+      }
+
+      // Refresh workout exercises to get updated sets
+      await fetchWorkoutExercises()
+      handleSetFormClose()
+
+      if (set) {
+        showSuccess('Set updated successfully')
+      } else {
+        const { numSets = 1 } = setData
+        showSuccess(`${numSets} set${numSets > 1 ? 's' : ''} added successfully`)
+      }
+    } catch (err) {
+      console.error('Error saving set:', err)
+      showError(err instanceof Error ? err.message : 'Failed to save set')
+    } finally {
+      setSetFormLoading(false)
+    }
+  }
+
+  const handleSetFormClose = () => {
+    setShowSetForm(false)
+    setEditingSet(null)
   }
 
   if (loading) {
@@ -386,30 +490,66 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
                       </div>
 
                       {/* Sets */}
-                      {workoutExercise.sets && workoutExercise.sets.length > 0 ? (
-                        <div className="mt-3">
-                          <h4 className="text-sm font-medium text-muted-foreground mb-2">Sets</h4>
+                      <div className="mt-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="text-sm font-medium text-muted-foreground">Sets</h4>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAddSet(workoutExercise.id)}
+                            className="text-xs"
+                          >
+                            ➕ Add Set
+                          </Button>
+                        </div>
+
+                        {workoutExercise.sets && workoutExercise.sets.length > 0 ? (
                           <div className="space-y-2">
                             {workoutExercise.sets.map((set, setIndex) => (
-                              <div key={set.id} className="flex items-center gap-4 text-sm">
+                              <div key={set.id} className="flex items-center gap-4 text-sm bg-muted p-2 rounded">
                                 <span className="w-8 text-center text-muted-foreground">{setIndex + 1}</span>
-                                <span className="text-foreground">
-                                  {set.weight}kg × {set.reps} reps
-                                </span>
-                                {set.rpe && <span className="text-muted-foreground">RPE {set.rpe}</span>}
-                                {set.isWarmup && (
-                                  <span className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded">
-                                    Warmup
+                                <div className="flex-1">
+                                  <span className="text-foreground">
+                                    {set.weight}kg × {set.reps} reps
                                   </span>
-                                )}
-                                {set.completed && <span className="text-green-600">✓</span>}
+                                  {set.rpe && <span className="text-muted-foreground ml-2">RPE {set.rpe}</span>}
+                                  {set.restTime && (
+                                    <span className="text-muted-foreground ml-2">Rest: {set.restTime}s</span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  {set.isWarmup && (
+                                    <span className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded">
+                                      Warmup
+                                    </span>
+                                  )}
+                                  {set.completed && <span className="text-green-600">✓</span>}
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleEditSet(workoutExercise.id, set)}
+                                    className="text-xs"
+                                  >
+                                    ✏️
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleDeleteSet(workoutExercise.id, set.id)}
+                                    className="text-xs text-red-600 hover:bg-red-50"
+                                  >
+                                    🗑️
+                                  </Button>
+                                </div>
                               </div>
                             ))}
                           </div>
-                        </div>
-                      ) : (
-                        <div className="mt-3 text-center py-4 text-muted-foreground">No sets recorded yet</div>
-                      )}
+                        ) : (
+                          <div className="text-center py-4 text-muted-foreground">
+                            No sets recorded yet. Click "Add Set" to start.
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )
                 })}
@@ -435,6 +575,16 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
         />
       )}
 
+      {/* Set Form Modal */}
+      {showSetForm && editingSet && (
+        <SetForm
+          set={editingSet.set}
+          onSubmit={handleSetSubmit}
+          onCancel={handleSetFormClose}
+          isLoading={setFormLoading}
+        />
+      )}
+
       {/* Confirmation Modal */}
       <ConfirmationModal
         isOpen={confirmationState.isOpen}
@@ -448,6 +598,9 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
         icon={confirmationState.icon}
         loading={confirmationState.loading}
       />
+
+      {/* Toast Notifications */}
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
   )
 }
