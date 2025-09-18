@@ -111,6 +111,7 @@ export const translations = {
     templates: 'Шаблони',
     profile: 'Профіль',
     signOut: 'Вийти',
+    more: 'Ще',
 
     // Template actions
     useTemplate: 'Використати шаблон',
@@ -173,6 +174,14 @@ export const translations = {
     noRecentWorkouts: 'Поки що немає тренувань',
     startFirstWorkout: 'Почніть своє перше тренування!',
     navigation: 'Навігація',
+    calculator: 'Калькулятор',
+    weight: 'Вага',
+    volume: "Об'єм",
+    reps: 'Повтори',
+    formula: 'Формула',
+    exercise: 'Вправа',
+    copy1RM: 'Скопіювати 1RM',
+    setAsPR: 'Зберегти як PR',
 
     // Auth
     email: 'Електронна пошта',
@@ -238,6 +247,24 @@ export const translations = {
 
     // Progress tracking
     progressTracking: 'Відстеження прогресу',
+    progressTrackingDescription: 'Відстежуйте свій прогрес у часі з детальними графіками та аналітикою',
+    selectExercises: 'Вибрати вправи',
+    showingDefaultTracked: 'Показано вправи за замовчуванням',
+    exercisesLabel: 'Вправи',
+    period: 'Період',
+    from: 'Від',
+    to: 'До',
+    loadingProgress: 'Завантаження даних прогресу...',
+    noProgressDataTitle: 'Немає даних прогресу',
+    noProgressDataForSelected: 'Немає даних прогресу для вибраних вправ за цей період.',
+    startTrackingToSeeCharts: 'Почніть відстежувати тренування, щоб бачити тут графіки.',
+    selectDifferentExercises: 'Вибрати інші вправи',
+    last30Days: 'Останні 30 днів',
+    last3Months: 'Останні 3 місяці',
+    last6Months: 'Останні 6 місяців',
+    allTime: 'За весь час',
+    failedToLoadProgress: 'Не вдалося завантажити дані прогресу',
+    noProgressFound: 'Немає даних прогресу для вибраних вправ',
     manageTracking: 'Управління відстеженням',
     trackingSettings: 'Налаштування трекінгу',
     trackedExercises: 'Відстежувані вправи',
@@ -309,6 +336,7 @@ export const translations = {
     templates: 'Templates',
     profile: 'Profile',
     signOut: 'Sign Out',
+    more: 'More',
 
     // Template actions
     useTemplate: 'Use Template',
@@ -371,6 +399,14 @@ export const translations = {
     noRecentWorkouts: 'No recent workouts yet',
     startFirstWorkout: 'Start your first workout!',
     navigation: 'Navigation',
+    calculator: 'Calculator',
+    weight: 'Weight',
+    volume: 'Volume',
+    reps: 'Reps',
+    formula: 'Formula',
+    exercise: 'Exercise',
+    copy1RM: 'Copy 1RM',
+    setAsPR: 'Set as PR',
 
     // Auth
     email: 'Email',

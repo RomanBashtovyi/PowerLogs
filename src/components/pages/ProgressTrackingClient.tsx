@@ -100,15 +100,15 @@ export default function ProgressTrackingClient() {
   const getTimeframeLabel = () => {
     switch (timeframe) {
       case '30':
-        return 'Last 30 days'
+        return t('last30Days')
       case '90':
-        return 'Last 3 months'
+        return t('last3Months')
       case '180':
-        return 'Last 6 months'
+        return t('last6Months')
       case 'all':
-        return 'All time'
+        return t('allTime')
       default:
-        return 'Last 3 months'
+        return t('last3Months')
     }
   }
 
@@ -117,8 +117,8 @@ export default function ProgressTrackingClient() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Progress Tracking</h1>
-          <p className="text-muted-foreground">Track your progress over time with detailed charts and analytics</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">{t('progressTracking')}</h1>
+          <p className="text-muted-foreground">{t('progressTrackingDescription')}</p>
         </div>
 
         {/* Controls */}
@@ -131,11 +131,11 @@ export default function ProgressTrackingClient() {
                 onClick={() => setShowExerciseSelector(true)}
                 className="flex items-center gap-2"
               >
-                📊 Select Exercises ({selectedExercises.length})
+                📊 {t('selectExercises')} ({selectedExercises.length})
               </Button>
 
               {selectedExercises.length === 0 && (
-                <span className="text-sm text-muted-foreground">Showing default tracked exercises</span>
+                <span className="text-sm text-muted-foreground">{t('showingDefaultTracked')}</span>
               )}
             </div>
 
@@ -188,23 +188,23 @@ export default function ProgressTrackingClient() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div>
                   <p className="text-2xl font-bold text-foreground">{progressData.summary.totalExercises}</p>
-                  <p className="text-sm text-muted-foreground">Exercises</p>
+                  <p className="text-sm text-muted-foreground">{t('exercisesLabel')}</p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">{getTimeframeLabel()}</p>
-                  <p className="text-sm text-muted-foreground">Period</p>
+                  <p className="text-sm text-muted-foreground">{t('period')}</p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">
                     {new Date(progressData.summary.dateRange.start).toLocaleDateString('uk-UA')}
                   </p>
-                  <p className="text-sm text-muted-foreground">From</p>
+                  <p className="text-sm text-muted-foreground">{t('from')}</p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">
                     {new Date(progressData.summary.dateRange.end).toLocaleDateString('uk-UA')}
                   </p>
-                  <p className="text-sm text-muted-foreground">To</p>
+                  <p className="text-sm text-muted-foreground">{t('to')}</p>
                 </div>
               </div>
             </div>
@@ -215,7 +215,7 @@ export default function ProgressTrackingClient() {
         {loading && (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Loading progress data...</p>
+            <p className="text-muted-foreground">{t('loadingProgress')}</p>
           </div>
         )}
 
@@ -232,14 +232,12 @@ export default function ProgressTrackingClient() {
         {!loading && (!progressData || progressData.exercises.length === 0) && (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">📈</div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">No Progress Data</h3>
+            <h3 className="text-xl font-semibold text-foreground mb-2">{t('noProgressDataTitle')}</h3>
             <p className="text-muted-foreground mb-4">
-              {selectedExercises.length > 0
-                ? 'No progress data found for the selected exercises in this timeframe.'
-                : 'Start tracking your workouts to see progress charts here.'}
+              {selectedExercises.length > 0 ? t('noProgressDataForSelected') : t('startTrackingToSeeCharts')}
             </p>
             <Button variant="outline" onClick={() => setShowExerciseSelector(true)}>
-              Select Different Exercises
+              {t('selectDifferentExercises')}
             </Button>
           </div>
         )}

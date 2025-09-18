@@ -3,7 +3,7 @@
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLanguage } from '../providers'
 import ThemeToggle from './ThemeToggle'
 import LanguageToggle from './LanguageToggle'
@@ -14,23 +14,37 @@ export default function Navigation() {
   const pathname = usePathname()
   const { t } = useLanguage()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isMoreOpen, setIsMoreOpen] = useState(false)
+  const moreRef = useRef<HTMLDivElement | null>(null)
 
-  // Don't show navigation on auth pages
-  if (pathname?.startsWith('/login') || pathname?.startsWith('/register')) {
-    return null
-  }
+  const hideNav = pathname?.startsWith('/login') || pathname?.startsWith('/register') || !session
 
-  if (!session) {
-    return null
-  }
-
-  const navItems = [
+  const primaryItems = [
     { href: '/dashboard', label: t('dashboard'), icon: '📊' },
     { href: '/workouts', label: t('workouts'), icon: '🏋️' },
-    { href: '/templates', label: 'Templates', icon: '📋' },
     { href: '/exercises', label: t('exercises'), icon: '💪' },
-    { href: '/dashboard/progress-tracking', label: t('progressTracking'), icon: '📈' },
   ]
+  const secondaryItems = [
+    { href: '/templates', label: 'Templates', icon: '📋' },
+    { href: '/dashboard/progress-tracking', label: t('progressTracking'), icon: '📈' },
+    { href: '/dashboard/calculator', label: '1RM', icon: '🧮' },
+  ]
+  const allItems = [...primaryItems, ...secondaryItems]
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (!moreRef.current) return
+      if (!moreRef.current.contains(e.target as Node)) {
+        setIsMoreOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onClickOutside)
+    return () => document.removeEventListener('mousedown', onClickOutside)
+  }, [])
+
+  if (hideNav) {
+    return null
+  }
 
   return (
     <>
@@ -45,7 +59,7 @@ export default function Navigation() {
 
             {/* Desktop Navigation - Hidden on mobile */}
             <div className="hidden md:flex items-center space-x-1">
-              {navItems.map((item) => {
+              {primaryItems.map((item) => {
                 const isActive = pathname === item.href
                 return (
                   <Link
@@ -62,6 +76,40 @@ export default function Navigation() {
                   </Link>
                 )
               })}
+              {/* More dropdown */}
+              <div className="relative" ref={moreRef}>
+                <button
+                  className="px-3 py-2 rounded-md text-sm font-medium transition-colors text-muted-foreground hover:text-foreground hover:bg-accent flex items-center gap-2"
+                  onClick={() => setIsMoreOpen((v) => !v)}
+                  aria-expanded={isMoreOpen}
+                  aria-haspopup="menu"
+                >
+                  <span>⋯</span>
+                  {t('more')}
+                </button>
+                {isMoreOpen && (
+                  <div className="absolute right-0 mt-2 w-56 rounded-md border border-border bg-background shadow-md">
+                    <div className="py-1">
+                      {secondaryItems.map((item) => {
+                        const isActive = pathname === item.href
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className={`flex items-center gap-2 px-3 py-2 text-sm ${
+                              isActive ? 'text-primary bg-accent' : 'text-foreground hover:bg-accent'
+                            }`}
+                            onClick={() => setIsMoreOpen(false)}
+                          >
+                            <span>{item.icon}</span>
+                            {item.label}
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Right side controls */}
@@ -100,7 +148,7 @@ export default function Navigation() {
           {isMobileMenuOpen && (
             <div className="md:hidden border-t border-border bg-background">
               <div className="px-2 py-3 space-y-1">
-                {navItems.map((item) => {
+                {allItems.map((item) => {
                   const isActive = pathname === item.href
                   return (
                     <Link
@@ -141,7 +189,7 @@ export default function Navigation() {
       {/* Bottom Navigation for Mobile */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t border-border z-50">
         <div className="grid grid-cols-4 gap-1">
-          {navItems.map((item) => {
+          {primaryItems.map((item) => {
             const isActive = pathname === item.href
             return (
               <Link

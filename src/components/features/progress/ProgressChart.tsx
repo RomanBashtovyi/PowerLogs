@@ -14,6 +14,7 @@ import {
   Bar,
 } from 'recharts'
 import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/components/providers'
 
 interface ProgressDataPoint {
   date: string
@@ -47,6 +48,7 @@ interface ProgressChartProps {
 }
 
 export default function ProgressChart({ exerciseProgress, metric = 'weight' }: ProgressChartProps) {
+  const { t } = useLanguage()
   const [selectedMetric, setSelectedMetric] = useState<'weight' | 'volume' | 'reps'>(metric)
   const [chartType, setChartType] = useState<'line' | 'bar'>('line')
 
@@ -68,11 +70,11 @@ export default function ProgressChart({ exerciseProgress, metric = 'weight' }: P
   const getMetricLabel = () => {
     switch (selectedMetric) {
       case 'weight':
-        return 'Max Weight (kg)'
+        return `${t('weight')} (kg)`
       case 'volume':
-        return 'Total Volume (kg)'
+        return `${t('volume') || 'Volume'} (kg)`
       case 'reps':
-        return 'Max Reps'
+        return t('reps')
       default:
         return 'Value'
     }
@@ -143,7 +145,11 @@ export default function ProgressChart({ exerciseProgress, metric = 'weight' }: P
                 onClick={() => setSelectedMetric(metricOption as any)}
                 className="rounded-none first:rounded-l-md last:rounded-r-md"
               >
-                {metricOption === 'weight' ? 'Weight' : metricOption === 'volume' ? 'Volume' : 'Reps'}
+                {metricOption === 'weight'
+                  ? t('weight')
+                  : metricOption === 'volume'
+                    ? t('volume') || 'Volume'
+                    : t('reps')}
               </Button>
             ))}
           </div>
@@ -173,11 +179,11 @@ export default function ProgressChart({ exerciseProgress, metric = 'weight' }: P
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="text-center">
           <p className="text-2xl font-bold text-foreground">{summary.totalWorkouts}</p>
-          <p className="text-sm text-muted-foreground">Workouts</p>
+          <p className="text-sm text-muted-foreground">{t('workouts')}</p>
         </div>
         <div className="text-center">
           <p className="text-2xl font-bold text-green-600">+{getImprovementValue()}%</p>
-          <p className="text-sm text-muted-foreground">Improvement</p>
+          <p className="text-sm text-muted-foreground">{t('update') || 'Improvement'}</p>
         </div>
         <div className="text-center">
           <p className="text-2xl font-bold text-foreground">
@@ -187,7 +193,7 @@ export default function ProgressChart({ exerciseProgress, metric = 'weight' }: P
                 ? Math.round(summary.firstRecord.totalVolume)
                 : summary.firstRecord.maxReps}
           </p>
-          <p className="text-sm text-muted-foreground">First</p>
+          <p className="text-sm text-muted-foreground">{t('from')}</p>
         </div>
         <div className="text-center">
           <p className="text-2xl font-bold text-foreground">
@@ -197,7 +203,7 @@ export default function ProgressChart({ exerciseProgress, metric = 'weight' }: P
                 ? Math.round(summary.lastRecord.totalVolume)
                 : summary.lastRecord.maxReps}
           </p>
-          <p className="text-sm text-muted-foreground">Latest</p>
+          <p className="text-sm text-muted-foreground">{t('to')}</p>
         </div>
       </div>
 
@@ -234,7 +240,7 @@ export default function ProgressChart({ exerciseProgress, metric = 'weight' }: P
       {/* No data message */}
       {chartData.length === 0 && (
         <div className="text-center py-8">
-          <p className="text-muted-foreground">No progress data available for this exercise</p>
+          <p className="text-muted-foreground">{t('noProgressFound')}</p>
         </div>
       )}
     </div>

@@ -5,9 +5,9 @@ import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
 const progressQuerySchema = z.object({
-  exerciseIds: z.string().optional(), // Comma-separated exercise IDs
-  timeframe: z.enum(['30', '90', '180', 'all']).default('90'), // Days
-  metric: z.enum(['weight', 'volume', 'reps']).default('weight'),
+  exerciseIds: z.string().optional(),
+  timeframe: z.union([z.enum(['30', '90', '180', 'all']), z.string()]).default('90'),
+  metric: z.union([z.enum(['weight', 'volume', 'reps']), z.string()]).default('weight'),
 })
 
 // GET /api/user/progress - Get progress data for selected exercises
@@ -27,10 +27,12 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
+    const rawTimeframe = searchParams.get('timeframe') || '90'
+    const rawMetric = searchParams.get('metric') || 'weight'
     const query = progressQuerySchema.parse({
-      exerciseIds: searchParams.get('exerciseIds'),
-      timeframe: searchParams.get('timeframe') || '90',
-      metric: searchParams.get('metric') || 'weight',
+      exerciseIds: searchParams.get('exerciseIds') || undefined,
+      timeframe: rawTimeframe,
+      metric: rawMetric,
     })
 
     // Calculate date range
