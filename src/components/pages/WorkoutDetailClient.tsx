@@ -668,7 +668,7 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
                           </div>
                         ) : (
                           <div className="text-center py-4 text-muted-foreground">
-                            No sets recorded yet. Click "Add Set" to start.
+                            No sets recorded yet. Click &quot;Add Set&quot; to start.
                           </div>
                         )}
                       </div>
