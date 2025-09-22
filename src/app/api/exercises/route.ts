@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     console.log('Session:', session ? 'exists' : 'null', session?.user?.email)
-    
+
     if (!session?.user?.email) {
       console.log('No session or email found')
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -44,13 +44,13 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category') || ''
     const muscleGroup = searchParams.get('muscleGroup') || ''
+    const onlyCustom = searchParams.get('onlyCustom') === 'true'
 
-    let where: any = {
-      OR: [
-        { isCustom: false }, // System exercises
-        { isCustom: true, userId: user.id }, // User's custom exercises
-      ],
-    }
+    let where: any = onlyCustom
+      ? { isCustom: true, userId: user.id }
+      : {
+          OR: [{ isCustom: false }, { isCustom: true, userId: user.id }],
+        }
 
     // Add additional filters only if they exist
     if (search || category || muscleGroup) {
@@ -67,10 +67,7 @@ export async function GET(request: NextRequest) {
 
       if (search) {
         where.AND.push({
-          OR: [
-            { name: { contains: search } },
-            { description: { contains: search } },
-          ],
+          OR: [{ name: { contains: search } }, { description: { contains: search } }],
         })
       }
 
@@ -98,7 +95,7 @@ export async function GET(request: NextRequest) {
       prisma.exercise.count({ where }),
     ])
 
-    console.log('API: Found', total, 'total exercises,', exercises.filter(e => e.isCustom).length, 'custom')
+    console.log('API: Found', total, 'total exercises,', exercises.filter((e) => e.isCustom).length, 'custom')
 
     return NextResponse.json({
       exercises,

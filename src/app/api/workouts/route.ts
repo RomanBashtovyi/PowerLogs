@@ -35,13 +35,20 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get('offset') || '0')
     const search = searchParams.get('search') || ''
     const isTemplate = searchParams.get('template') === 'true'
+    const timeframeDays = parseInt(searchParams.get('timeframeDays') || '0')
 
-    const where = {
+    const where: any = {
       userId: user.id,
       isTemplate,
-      ...(search && {
-        OR: [{ name: { contains: search } }, { description: { contains: search } }],
-      }),
+    }
+
+    if (search) {
+      where.OR = [{ name: { contains: search } }, { description: { contains: search } }]
+    }
+
+    if (!isNaN(timeframeDays) && timeframeDays > 0) {
+      const since = new Date(Date.now() - timeframeDays * 24 * 60 * 60 * 1000)
+      where.date = { gte: since }
     }
 
     const [workouts, total] = await Promise.all([
