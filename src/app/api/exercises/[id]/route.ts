@@ -26,8 +26,10 @@ interface RouteParams {
 
 // GET /api/exercises/[id] - Get specific exercise
 export async function GET(request: NextRequest, { params }: RouteParams) {
+  console.log('GET /api/exercises/[id] called with params:', params)
   try {
     const session = await getServerSession(authOptions)
+    console.log('Session:', session?.user?.email)
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -116,8 +118,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 // DELETE /api/exercises/[id] - Delete exercise (only custom exercises)
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  console.log('DELETE /api/exercises/[id] called with params:', params)
   try {
     const session = await getServerSession(authOptions)
+    console.log('Session:', session?.user?.email)
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
