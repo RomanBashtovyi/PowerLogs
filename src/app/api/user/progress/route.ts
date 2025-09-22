@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
+// Mark as dynamic route since it uses request headers
+export const dynamic = 'force-dynamic'
+
 const progressQuerySchema = z.object({
   exerciseIds: z.string().optional(),
   timeframe: z.union([z.enum(['30', '90', '180', 'all']), z.string()]).default('90'),
