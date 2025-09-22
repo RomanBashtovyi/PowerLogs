@@ -25,6 +25,14 @@ const nextConfig = {
     isrMemoryCacheSize: 0,
   },
   trailingSlash: false,
+ 
+  async rewrites() {
+    return []
+  },
+
+  exportPathMap: async function () {
+    return {}
+  },
 }
 
 module.exports = nextConfig
