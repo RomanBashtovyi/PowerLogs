@@ -17,12 +17,14 @@ const nextConfig = {
         hostname: 'localhost',
       },
     ],
-    unoptimized: true, // For development
+    unoptimized: true,
   },
   generateBuildId: () => 'build',
   experimental: {
     instrumentationHook: false,
+    isrMemoryCacheSize: 0,
   },
+  trailingSlash: false,
 }
 
 module.exports = nextConfig
