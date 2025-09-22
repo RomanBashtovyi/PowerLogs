@@ -27,6 +27,7 @@ export default function Navigation() {
   const secondaryItems = [
     { href: '/templates', label: 'Templates', icon: '📋' },
     { href: '/dashboard/progress-tracking', label: t('progressTracking'), icon: '📈' },
+    { href: '/dashboard/calendar', label: 'Calendar', icon: '📅' },
     { href: '/dashboard/calculator', label: '1RM', icon: '🧮' },
   ]
   const allItems = [...primaryItems, ...secondaryItems]

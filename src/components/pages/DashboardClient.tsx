@@ -178,6 +178,12 @@ export default function DashboardClient({ session }: DashboardClientProps) {
                 🏋️ {t('startNewWorkout')}
               </Link>
               <Link
+                href="/dashboard/calendar"
+                className="block w-full bg-secondary text-secondary-foreground text-center py-3 px-4 rounded-md hover:bg-secondary/80 transition-colors"
+              >
+                📅 Календар
+              </Link>
+              <Link
                 href="/workouts"
                 className="block w-full bg-secondary text-secondary-foreground text-center py-3 px-4 rounded-md hover:bg-secondary/80 transition-colors"
               >
