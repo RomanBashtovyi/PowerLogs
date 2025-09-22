@@ -4,6 +4,10 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
+export async function generateStaticParams() {
+  return []
+}
+
 const workoutSchema = z.object({
   name: z.string().min(1, 'Workout name is required'),
   description: z.string().optional(),

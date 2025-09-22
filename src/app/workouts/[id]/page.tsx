@@ -3,6 +3,10 @@ import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
 import { WorkoutDetailClient } from '@/components/pages'
 
+export async function generateStaticParams() {
+  return []
+}
+
 interface WorkoutDetailPageProps {
   params: {
     id: string

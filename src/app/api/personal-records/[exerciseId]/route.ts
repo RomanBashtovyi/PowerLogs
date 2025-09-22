@@ -3,6 +3,10 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 
+export async function generateStaticParams() {
+  return []
+}
+
 // GET /api/personal-records/[exerciseId] - Get personal record for specific exercise
 export async function GET(request: Request, { params }: { params: { exerciseId: string } }) {
   try {
