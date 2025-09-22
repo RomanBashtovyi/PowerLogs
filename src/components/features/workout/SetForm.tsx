@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useLanguage } from '@/components/providers'
 import { Button } from '@/components/ui/button'
+import RestTimer from '@/components/ui/RestTimer'
 import { Set } from '@/types/workout'
 
 interface SetFormProps {
@@ -25,6 +26,7 @@ export default function SetForm({ set, onSubmit, onCancel, isLoading }: SetFormP
     isPercentageBased: set?.isPercentageBased || false,
     percentageOf1RM: set?.percentageOf1RM ? set.percentageOf1RM.toString() : '',
   })
+  const [showTimer, setShowTimer] = useState(false)
 
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -206,6 +208,20 @@ export default function SetForm({ set, onSubmit, onCancel, isLoading }: SetFormP
               placeholder="Rest time (optional)"
             />
             {errors.restTime && <p className="text-red-500 text-sm mt-1">{errors.restTime}</p>}
+            <label className="mt-2 flex items-center gap-2 text-sm text-foreground">
+              <input
+                type="checkbox"
+                checked={showTimer}
+                onChange={(e) => setShowTimer(e.target.checked)}
+                className="h-4 w-4"
+              />
+              Показати таймер відпочинку
+            </label>
+            {showTimer && (
+              <div className="mt-2">
+                <RestTimer initialSeconds={formData.restTime ? parseInt(formData.restTime) : 90} />
+              </div>
+            )}
           </div>
 
           {/* Number of Sets (only for new sets) */}

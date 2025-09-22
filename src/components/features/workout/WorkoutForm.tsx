@@ -26,11 +26,14 @@ export default function WorkoutForm({ workout, onSubmit, onCancel, isLoading }: 
   const { t } = useLanguage()
   const router = useRouter()
 
+  const initialDateStr = workout?.date
+    ? new Date(workout.date).toISOString().split('T')[0]
+    : new Date().toISOString().split('T')[0]
   const [formData, setFormData] = useState<WorkoutFormData>({
-    name: workout?.name || '',
+    name: workout?.name || initialDateStr,
     description: workout?.description || '',
-    date: workout?.date ? new Date(workout.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-    duration: workout?.duration || undefined,
+    date: initialDateStr,
+    duration: workout?.duration ?? 120,
     notes: workout?.notes || '',
     isTemplate: workout?.isTemplate || false,
   })
@@ -145,7 +148,15 @@ export default function WorkoutForm({ workout, onSubmit, onCancel, isLoading }: 
               type="date"
               id="date"
               value={formData.date}
-              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              onChange={(e) => {
+                const prevDate = formData.date
+                const newDate = e.target.value
+                setFormData((prev) => ({
+                  ...prev,
+                  date: newDate,
+                  name: !prev.name || prev.name === prevDate ? newDate : prev.name,
+                }))
+              }}
               className="w-full px-4 py-3 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
               disabled={isLoading}
             />
@@ -164,7 +175,7 @@ export default function WorkoutForm({ workout, onSubmit, onCancel, isLoading }: 
                 setFormData({ ...formData, duration: e.target.value ? Number(e.target.value) : undefined })
               }
               className="w-full px-4 py-3 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="60"
+              placeholder="120"
               min="1"
               disabled={isLoading}
             />
