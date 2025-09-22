@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useLanguage } from '@/components/providers'
 import { Button } from '@/components/ui/button'
 import { ExerciseCard } from '@/components/features/exercise'
