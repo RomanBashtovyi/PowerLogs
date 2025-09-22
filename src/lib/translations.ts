@@ -470,6 +470,25 @@ export const translations = {
     appDescription: 'Твій персональний фітнес трекер для відслідковування тренувань та прогресу',
     startTraining: 'Почати тренування',
     signInButton: 'Увійти',
+
+    // Profile page
+    account: 'Акаунт',
+    interface: 'Інтерфейс',
+    trainingPreferences: 'Тренувальні вподобання',
+    rpeRange: 'RPE діапазон',
+    restTimerSeconds: 'Таймер відпочинку (сек.)',
+    weightRounding: 'Округлення ваги',
+    autoTrackBaseExercises: 'Авто‑додавати базові вправи у трекінг',
+    personalRecords: 'Персональні рекорди',
+    type: 'Тип',
+    value: 'Значення',
+    actions: 'Дії',
+    tips: 'Підказки',
+    openExercise: 'Відкрити вправу',
+    searchExercise: 'Пошук вправи...',
+    noRecords: 'Немає рекордів',
+    oneRmFormulas: '1RM: Epley / Brzycki / Lombardi',
+    volumeDefinition: 'Об&apos;єм = сума (вага × повтори) за тренування',
   },
 
   en: {
@@ -652,6 +671,25 @@ export const translations = {
     appDescription: 'Your personal fitness tracker for monitoring workouts and progress',
     startTraining: 'Start Training',
     signInButton: 'Sign In',
+
+    // Profile page
+    account: 'Account',
+    interface: 'Interface',
+    trainingPreferences: 'Training preferences',
+    rpeRange: 'RPE range',
+    restTimerSeconds: 'Rest timer (sec.)',
+    weightRounding: 'Weight rounding',
+    autoTrackBaseExercises: 'Auto‑track base exercises',
+    personalRecords: 'Personal Records',
+    type: 'Type',
+    value: 'Value',
+    actions: 'Actions',
+    tips: 'Tips',
+    openExercise: 'Open exercise',
+    searchExercise: 'Search exercise...',
+    noRecords: 'No records',
+    oneRmFormulas: '1RM: Epley / Brzycki / Lombardi',
+    volumeDefinition: 'Volume = sum of (weight × reps) per workout',
   },
 } as const
 
