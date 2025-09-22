@@ -201,9 +201,9 @@ export default function PersonalRecordManager({
         currentRecord={
           personalRecord
             ? {
-                recordType: personalRecord.recordType,
-                oneRepMax: personalRecord.oneRepMax,
-                maxReps: personalRecord.maxReps,
+                recordType: personalRecord.recordType as 'weight' | 'reps',
+                oneRepMax: personalRecord.oneRepMax ?? undefined,
+                maxReps: personalRecord.maxReps ?? undefined,
               }
             : undefined
         }

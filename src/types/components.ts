@@ -12,7 +12,7 @@ export interface PageProps {
 }
 
 export interface DashboardClientProps {
-  session: AuthSession
+  session: import('next-auth').Session
 }
 
 export interface NavigationProps {

@@ -32,7 +32,9 @@ export const authOptions: NextAuthOptions = {
       return token
     },
     async session({ session, token }) {
-      if (token?.userId) (session as any).userId = token.userId as string
+      if (token?.userId && session.user) {
+        session.user.id = token.userId as string
+      }
       return session
     },
   },

@@ -39,7 +39,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, [language])
 
   const t = (key: TranslationKey): string => {
-    return translations[language][key] || translations.en[key] || key
+    const languageTranslations = translations[language] as Record<string, string>
+    const englishTranslations = translations.en as Record<string, string>
+    return languageTranslations[key] || englishTranslations[key] || key
   }
 
   return <LanguageContext.Provider value={{ language, setLanguage, t }}>{children}</LanguageContext.Provider>

@@ -127,8 +127,10 @@ export async function GET(request: NextRequest) {
 
         const point = dataPoints.get(date)
         point.sets.push(set)
-        point.maxWeight = Math.max(point.maxWeight, set.weight)
-        point.totalVolume += set.weight * set.reps
+        if (set.weight !== null) {
+          point.maxWeight = Math.max(point.maxWeight, set.weight)
+          point.totalVolume += set.weight * set.reps
+        }
         point.maxReps = Math.max(point.maxReps, set.reps)
       })
 
@@ -150,14 +152,14 @@ export async function GET(request: NextRequest) {
           lastRecord: chartData[chartData.length - 1],
           improvement: {
             weight:
-              chartData.length > 1
+              chartData.length > 1 && chartData[0].maxWeight > 0
                 ? (
                     ((chartData[chartData.length - 1].maxWeight - chartData[0].maxWeight) / chartData[0].maxWeight) *
                     100
                   ).toFixed(1)
                 : 0,
             volume:
-              chartData.length > 1
+              chartData.length > 1 && chartData[0].totalVolume > 0
                 ? (
                     ((chartData[chartData.length - 1].totalVolume - chartData[0].totalVolume) /
                       chartData[0].totalVolume) *

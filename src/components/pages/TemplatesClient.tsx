@@ -90,35 +90,36 @@ export default function TemplatesClient() {
   }
 
   const handleDeleteTemplate = async (templateId: string, templateName: string) => {
-    showConfirmation({
+    const confirmed = await showConfirmation({
       title: 'Delete Template',
       message: `Are you sure you want to delete the template "${templateName}"? This action cannot be undone.`,
       confirmText: 'Delete Template',
       cancelText: 'Cancel',
       confirmVariant: 'destructive',
       icon: '🗑️',
-      onConfirm: async () => {
-        try {
-          setConfirmationLoading(true)
-
-          const response = await fetch(`/api/templates/${templateId}`, {
-            method: 'DELETE',
-          })
-
-          if (!response.ok) {
-            throw new Error('Failed to delete template')
-          }
-
-          showSuccess(`Template "${templateName}" deleted successfully`)
-          await fetchTemplates() // Refresh list
-        } catch (err) {
-          console.error('Error deleting template:', err)
-          showError('Failed to delete template')
-        } finally {
-          setConfirmationLoading(false)
-        }
-      },
     })
+
+    if (!confirmed) return
+
+    try {
+      setConfirmationLoading(true)
+
+      const response = await fetch(`/api/templates/${templateId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete template')
+      }
+
+      showSuccess(`Template "${templateName}" deleted successfully`)
+      await fetchTemplates() // Refresh list
+    } catch (err) {
+      console.error('Error deleting template:', err)
+      showError('Failed to delete template')
+    } finally {
+      setConfirmationLoading(false)
+    }
   }
 
   const formatDate = (date: Date) => {

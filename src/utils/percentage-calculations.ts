@@ -30,10 +30,10 @@ export function calculatePercentageFromWeight(weight: number, oneRepMax: number)
  * @returns Effective weight to display/use
  */
 export function getEffectiveWeight(set: Set, personalRecord?: PersonalRecord): number | null {
-  if (set.isPercentageBased && set.percentageOf1RM && personalRecord) {
+  if (set.isPercentageBased && set.percentageOf1RM && personalRecord?.oneRepMax) {
     return calculateWeightFromPercentage(set.percentageOf1RM, personalRecord.oneRepMax)
   }
-  return set.weight
+  return set.weight ?? null
 }
 
 /**
@@ -44,7 +44,7 @@ export function getEffectiveWeight(set: Set, personalRecord?: PersonalRecord): n
  */
 export function formatWeightDisplay(set: Set, personalRecord?: PersonalRecord): string {
   if (set.isPercentageBased && set.percentageOf1RM) {
-    if (personalRecord) {
+    if (personalRecord?.oneRepMax) {
       const calculatedWeight = calculateWeightFromPercentage(set.percentageOf1RM, personalRecord.oneRepMax)
       return `${calculatedWeight}kg (${set.percentageOf1RM}% of 1RM)`
     } else {
