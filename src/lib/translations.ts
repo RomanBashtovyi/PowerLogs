@@ -14,6 +14,150 @@ export const exerciseTranslations = {
       name: 'Станова тяга',
       description: "Комплексна вправа для всього тіла з акцентом на задню ланцюг м'язів",
     },
+    'Incline Bench Press': {
+      name: 'Жим лежачи на похилій лаві',
+      description: 'Наголос на верхній частині грудей',
+    },
+    'Close-Grip Bench Press': {
+      name: 'Жим вузьким хватом',
+      description: 'Посилена робота трицепсів',
+    },
+    'Decline Bench Press': {
+      name: 'Жим на похилій лаві вниз',
+      description: 'Наголос на нижній частині грудей',
+    },
+    'Dumbbell Bench Press': {
+      name: 'Жим гантелей лежачи',
+      description: 'Більша амплітуда та контроль',
+    },
+    'Cable Crossover': {
+      name: 'Кросовер на груди',
+      description: 'Ізоляція грудних на блоках',
+    },
+    'Pec Deck': {
+      name: 'Пек‑дек',
+      description: 'Ізоляція грудних у тренажері',
+    },
+    'Barbell Row': {
+      name: 'Тяга штанги в нахилі',
+      description: 'Товщина спини',
+    },
+    'Seated Cable Row': {
+      name: 'Тяга горизонтального блока',
+      description: 'Горизонтальна тяга для середини спини',
+    },
+    'Lat Pulldown (Wide Grip)': {
+      name: 'Тяга верхнього блока широким хватом',
+      description: 'Вертикальна тяга на широчайші',
+    },
+    'Lat Pulldown (Close Grip)': {
+      name: 'Тяга верхнього блока вузьким/нейтральним хватом',
+      description: 'Акцент на широчайші',
+    },
+    'T-Bar Row': {
+      name: 'Тяга Т‑грифа',
+      description: 'Середина спини',
+    },
+    'Face Pull': {
+      name: 'Фейс пул',
+      description: 'Задні дельти та ротатори',
+    },
+    'Romanian Deadlift': {
+      name: 'Румунська тяга',
+      description: 'Задня поверхня стегна і сідниці',
+    },
+    'Sumo Deadlift': {
+      name: 'Сумо тяга',
+      description: 'Широка стійка, акцент на ноги/сідниці',
+    },
+    'Hip Thrust': {
+      name: 'Ягодичний міст зі штангою',
+      description: 'Максимальна активація сідниць',
+    },
+    'Leg Press': {
+      name: 'Жим ногами',
+      description: 'Базова вправа у тренажері',
+    },
+    'Hack Squat': {
+      name: 'Гак присідання',
+      description: 'Квадрицепс у тренажері',
+    },
+    'Bulgarian Split Squat': {
+      name: 'Болгарські випади',
+      description: 'Спліт-присідання з опорою ноги',
+    },
+    'Walking Lunge': {
+      name: 'Випади з кроком',
+      description: 'Альтернативні випади ходою',
+    },
+    'Leg Extension': {
+      name: 'Розгинання ніг',
+      description: 'Ізоляція квадрицепса',
+    },
+    'Leg Curl': {
+      name: 'Згинання ніг',
+      description: 'Ізоляція біцепса стегна',
+    },
+    'Standing Calf Raise': {
+      name: 'Підйом на ікри стоячи',
+      description: 'Ікри',
+    },
+    'Seated Calf Raise': {
+      name: 'Підйом на ікри сидячи',
+      description: 'Ікри',
+    },
+    'Hammer Curl': {
+      name: 'Хаммер',
+      description: 'Брахіаліс і біцепс',
+    },
+    'Incline Dumbbell Curl': {
+      name: 'Підйом гантелей на похилій лаві',
+      description: 'Довга головка біцепса',
+    },
+    'Triceps Pushdown': {
+      name: 'Розгинання на блоці (трицепс)',
+      description: 'Ізоляція трицепса',
+    },
+    'Skull Crushers': {
+      name: 'Французький жим лежачи',
+      description: 'Розгинання рук з EZ-грифом',
+    },
+    'Overhead Triceps Extension': {
+      name: 'Розгинання над головою',
+      description: 'Трицепс з гантеллю/блоком',
+    },
+    'Chin-up': {
+      name: 'Підтягування зворотним хватом',
+      description: 'Акцент на біцепс/спину',
+    },
+    'Dumbbell Shoulder Press': {
+      name: 'Жим гантелей сидячи',
+      description: 'Дельти',
+    },
+    'Lateral Raise': {
+      name: 'Махи в сторони',
+      description: 'Середні дельти',
+    },
+    'Rear Delt Fly': {
+      name: 'Махи на задні дельти',
+      description: 'Задні дельти',
+    },
+    'Smith Machine Squat': {
+      name: 'Присідання в Смітті',
+      description: 'Керована траєкторія',
+    },
+    'Smith Machine Bench Press': {
+      name: 'Жим у Смітті',
+      description: 'Безпека та контроль',
+    },
+    Hyperextension: {
+      name: 'Гіперекстензія',
+      description: 'Розгинання спини',
+    },
+    'Hanging Leg Raise': {
+      name: 'Підйом ніг у висі',
+      description: 'Прес і згиначі стегна',
+    },
     'Pull-up': {
       name: 'Підтягування',
       description: "Вправа для верхньої частини тіла з власною вагою для м'язів спини",
@@ -24,7 +168,7 @@ export const exerciseTranslations = {
     },
     'Dumbbell Row': {
       name: 'Тяга гантелі',
-      description: 'Односторонна вправа для спини з використанням гантелей',
+      description: 'Одностороння вправа для спини з використанням гантелей',
     },
     'Overhead Press': {
       name: 'Жим стоячи',

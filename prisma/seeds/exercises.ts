@@ -16,6 +16,336 @@ export const exercisesSeedData = [
     isTrackedByDefault: true, // Base exercise for tracking
   },
   {
+    name: 'Incline Bench Press',
+    description: 'Chest press on an incline bench to target upper chest',
+    instructions:
+      '1. Set bench to 30–45° incline\n2. Grip bar slightly wider than shoulders\n3. Lower to upper chest\n4. Press up and slightly back\n5. Keep shoulder blades retracted',
+    muscleGroups: JSON.stringify(['chest', 'triceps', 'shoulders']),
+    equipment: 'Штанга',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Close-Grip Bench Press',
+    description: 'Narrow grip bench press emphasizing triceps',
+    instructions:
+      '1. Grip bar just inside shoulder width\n2. Keep elbows close\n3. Lower to lower chest\n4. Press up powerfully',
+    muscleGroups: JSON.stringify(['triceps', 'chest', 'shoulders']),
+    equipment: 'Штанга',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Decline Bench Press',
+    description: 'Press on a decline bench targeting lower chest',
+    instructions: '1. Set decline bench\n2. Lower bar to lower chest\n3. Press up under control',
+    muscleGroups: JSON.stringify(['chest', 'triceps']),
+    equipment: 'Штанга',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Dumbbell Bench Press',
+    description: 'Chest press using dumbbells for greater range of motion',
+    instructions: '1. Start with dumbbells over chest\n2. Lower with elbows at ~45°\n3. Press up and squeeze chest',
+    muscleGroups: JSON.stringify(['chest', 'triceps', 'shoulders']),
+    equipment: 'Гантелі',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Cable Crossover',
+    description: 'Cable fly focusing on chest contraction',
+    instructions:
+      '1. Set pulleys at shoulder height\n2. Step forward\n3. Bring handles together in arc\n4. Stretch and squeeze each rep',
+    muscleGroups: JSON.stringify(['chest']),
+    equipment: 'Кросовер',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Pec Deck',
+    description: 'Machine fly for chest isolation',
+    instructions: '1. Adjust seat so elbows align with pads\n2. Bring arms together\n3. Squeeze chest; control return',
+    muscleGroups: JSON.stringify(['chest']),
+    equipment: 'Тренажер',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Barbell Row',
+    description: 'Bent-over row for back thickness',
+    instructions:
+      '1. Hinge at hips with flat back\n2. Row bar to lower chest/upper abs\n3. Control down; keep torso stable',
+    muscleGroups: JSON.stringify(['back', 'biceps']),
+    equipment: 'Штанга',
+    category: 'strength' as const,
+    isCustom: false,
+    isTrackedByDefault: true,
+  },
+  {
+    name: 'Seated Cable Row',
+    description: 'Horizontal row on cable machine',
+    instructions: '1. Sit tall\n2. Pull handle to torso\n3. Squeeze shoulder blades\n4. Control forward',
+    muscleGroups: JSON.stringify(['back', 'biceps']),
+    equipment: 'Блоки',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Lat Pulldown (Wide Grip)',
+    description: 'Vertical pull targeting lats',
+    instructions: '1. Grip bar wide\n2. Pull to upper chest\n3. Drive elbows down\n4. Control up fully',
+    muscleGroups: JSON.stringify(['back', 'biceps']),
+    equipment: 'Блоки',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Lat Pulldown (Close Grip)',
+    description: 'Close/neutral grip pulldown',
+    instructions: '1. Use V-handle\n2. Pull to chest while leaning slightly back\n3. Squeeze lats at bottom',
+    muscleGroups: JSON.stringify(['back', 'biceps']),
+    equipment: 'Блоки',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'T-Bar Row',
+    description: 'Landmine/T‑bar row for mid-back',
+    instructions: '1. Hinge at hips\n2. Row handle to chest\n3. Keep elbows close',
+    muscleGroups: JSON.stringify(['back', 'biceps']),
+    equipment: 'Штанга',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Face Pull',
+    description: 'Cable pull to face for rear delts and rotators',
+    instructions: '1. Use rope at forehead height\n2. Pull to face with external rotation\n3. Control back',
+    muscleGroups: JSON.stringify(['shoulders', 'back']),
+    equipment: 'Блоки',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Romanian Deadlift',
+    description: 'Hip hinge emphasizing hamstrings and glutes',
+    instructions:
+      '1. Soft knees\n2. Push hips back\n3. Keep bar close to legs\n4. Stretch hamstrings\n5. Drive hips forward',
+    muscleGroups: JSON.stringify(['hamstrings', 'glutes', 'back']),
+    equipment: 'Штанга',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Sumo Deadlift',
+    description: 'Wide-stance deadlift variation',
+    instructions: '1. Wide stance, toes out\n2. Grip inside knees\n3. Drive knees out and hips forward',
+    muscleGroups: JSON.stringify(['legs', 'glutes', 'back']),
+    equipment: 'Штанга',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Hip Thrust',
+    description: 'Glute-focused hip extension with barbell',
+    instructions: '1. Upper back on bench\n2. Bar over hips\n3. Extend hips to full lockout\n4. Pause and squeeze',
+    muscleGroups: JSON.stringify(['glutes', 'hamstrings']),
+    equipment: 'Штанга',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Leg Press',
+    description: 'Compound machine press for legs',
+    instructions: '1. Feet shoulder width\n2. Lower to ~90° knee bend\n3. Press without locking knees',
+    muscleGroups: JSON.stringify(['legs', 'glutes']),
+    equipment: 'Тренажер',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Hack Squat',
+    description: 'Machine squat variation for quads',
+    instructions: '1. Keep back on pad\n2. Descend deep with knees tracking\n3. Drive up through mid‑foot',
+    muscleGroups: JSON.stringify(['quads', 'glutes']),
+    equipment: 'Тренажер',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Bulgarian Split Squat',
+    description: 'Rear‑foot elevated split squat',
+    instructions: '1. Rear foot on bench\n2. Drop back knee down\n3. Keep torso tall\n4. Drive through front heel',
+    muscleGroups: JSON.stringify(['quads', 'glutes']),
+    equipment: 'Гантелі',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Walking Lunge',
+    description: 'Alternating forward lunges while walking',
+    instructions: '1. Step forward\n2. Lower until both knees ~90°\n3. Push through front heel',
+    muscleGroups: JSON.stringify(['quads', 'glutes', 'hamstrings']),
+    equipment: 'Гантелі',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Leg Extension',
+    description: 'Isolation for quadriceps',
+    instructions: '1. Adjust pad above ankles\n2. Extend knees fully\n3. Control down',
+    muscleGroups: JSON.stringify(['quads']),
+    equipment: 'Тренажер',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Leg Curl',
+    description: 'Hamstring curl machine',
+    instructions: '1. Align knee with machine pivot\n2. Curl pad toward glutes\n3. Control back',
+    muscleGroups: JSON.stringify(['hamstrings']),
+    equipment: 'Тренажер',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Standing Calf Raise',
+    description: 'Calf raise performed standing',
+    instructions: '1. Full stretch at bottom\n2. Press up to peak contraction\n3. Pause briefly',
+    muscleGroups: JSON.stringify(['calves']),
+    equipment: 'Тренажер',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Seated Calf Raise',
+    description: 'Calf raise performed seated',
+    instructions: '1. Adjust thigh pad\n2. Raise heels high\n3. Lower to deep stretch',
+    muscleGroups: JSON.stringify(['calves']),
+    equipment: 'Тренажер',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Hammer Curl',
+    description: 'Neutral grip curl targeting brachialis',
+    instructions: '1. Hold dumbbells neutral\n2. Curl without rotation\n3. Control down',
+    muscleGroups: JSON.stringify(['biceps']),
+    equipment: 'Гантелі',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Incline Dumbbell Curl',
+    description: 'Biceps curl on incline bench for long head',
+    instructions: '1. Lean back on incline bench\n2. Let arms fully stretch\n3. Curl and squeeze',
+    muscleGroups: JSON.stringify(['biceps']),
+    equipment: 'Гантелі',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Triceps Pushdown',
+    description: 'Cable pushdown for triceps',
+    instructions: '1. Use rope or straight bar\n2. Keep elbows by sides\n3. Extend fully\n4. Control up',
+    muscleGroups: JSON.stringify(['triceps']),
+    equipment: 'Блоки',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Skull Crushers',
+    description: 'Lying EZ‑bar triceps extensions',
+    instructions: '1. Lower bar toward forehead\n2. Keep elbows in\n3. Extend to lockout',
+    muscleGroups: JSON.stringify(['triceps']),
+    equipment: 'Штанга',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Overhead Triceps Extension',
+    description: 'Overhead extension with dumbbell or cable',
+    instructions: '1. Elbows high\n2. Lower behind head\n3. Extend fully',
+    muscleGroups: JSON.stringify(['triceps']),
+    equipment: 'Гантелі',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Chin-up',
+    description: 'Underhand grip pull-up variation',
+    instructions: '1. Grip underhand shoulder width\n2. Pull until chin over bar\n3. Lower under control',
+    muscleGroups: JSON.stringify(['back', 'biceps']),
+    equipment: 'Власна вага',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Dumbbell Shoulder Press',
+    description: 'Overhead press using dumbbells',
+    instructions: '1. Start seated\n2. Press dumbbells overhead\n3. Control to ears level',
+    muscleGroups: JSON.stringify(['shoulders', 'triceps']),
+    equipment: 'Гантелі',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Lateral Raise',
+    description: 'Dumbbell raise to the side for medial delts',
+    instructions: '1. Slight elbow bend\n2. Raise to shoulder height\n3. Control down',
+    muscleGroups: JSON.stringify(['shoulders']),
+    equipment: 'Гантелі',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Rear Delt Fly',
+    description: 'Bent-over dumbbell fly for rear delts',
+    instructions: '1. Hinge at hips\n2. Raise arms out to sides\n3. Squeeze rear delts',
+    muscleGroups: JSON.stringify(['shoulders', 'back']),
+    equipment: 'Гантелі',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Smith Machine Squat',
+    description: 'Squat using Smith machine',
+    instructions: '1. Feet slightly forward\n2. Descend under control\n3. Drive up through mid‑foot',
+    muscleGroups: JSON.stringify(['quads', 'glutes']),
+    equipment: 'Смітт',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Smith Machine Bench Press',
+    description: 'Bench press using Smith machine',
+    instructions: '1. Set safeties\n2. Lower to chest\n3. Press up; keep wrists stacked',
+    muscleGroups: JSON.stringify(['chest', 'triceps']),
+    equipment: 'Смітт',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Hyperextension',
+    description: 'Back extension on Roman chair',
+    instructions: '1. Hips over pad\n2. Lower with neutral spine\n3. Extend by squeezing glutes',
+    muscleGroups: JSON.stringify(['back', 'glutes', 'hamstrings']),
+    equipment: 'Тренажер',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Hanging Leg Raise',
+    description: 'Core exercise lifting legs while hanging',
+    instructions: '1. Hang from bar\n2. Raise legs to hip level or higher\n3. Control down, avoid swinging',
+    muscleGroups: JSON.stringify(['abs', 'hip flexors']),
+    equipment: 'Турнік',
+    category: 'strength' as const,
+    isCustom: false,
+  },
+  {
     name: 'Squat',
     description: 'Fundamental lower body exercise targeting legs and glutes',
     instructions:
@@ -110,12 +440,11 @@ export const exercisesSeedData = [
     isCustom: false,
   },
 
-  // Cardio Exercises
+  // Cardio Exercises (limited to core set up to 10)
   {
     name: 'Running',
     description: 'Classic cardiovascular exercise',
-    instructions:
-      '1. Start with warm-up walk\n2. Gradually increase pace to comfortable run\n3. Maintain steady breathing\n4. Land on midfoot\n5. Cool down with walk',
+    instructions: 'Maintain steady breathing; warm up and cool down',
     muscleGroups: JSON.stringify(['cardio', 'legs']),
     equipment: '',
     category: 'cardio' as const,
@@ -124,40 +453,72 @@ export const exercisesSeedData = [
   {
     name: 'Cycling',
     description: 'Low-impact cardiovascular exercise',
-    instructions:
-      '1. Adjust seat height properly\n2. Start with easy pace\n3. Gradually increase intensity\n4. Maintain steady cadence\n5. Cool down gradually',
+    instructions: 'Adjust seat; keep steady cadence',
     muscleGroups: JSON.stringify(['cardio', 'legs']),
     equipment: 'Кардіо',
     category: 'cardio' as const,
     isCustom: false,
   },
   {
+    name: 'Rowing Machine',
+    description: 'Cardio with full-body involvement',
+    instructions: 'Drive with legs, then back and arms',
+    muscleGroups: JSON.stringify(['cardio', 'back', 'legs']),
+    equipment: 'Тренажер',
+    category: 'cardio' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Elliptical',
+    description: 'Low-impact cardio trainer',
+    instructions: 'Keep steady rhythm and posture',
+    muscleGroups: JSON.stringify(['cardio']),
+    equipment: 'Тренажер',
+    category: 'cardio' as const,
+    isCustom: false,
+  },
+  {
+    name: 'Stair Climber',
+    description: 'Stepping cardio workout',
+    instructions: 'Short steps, steady pace',
+    muscleGroups: JSON.stringify(['cardio', 'legs']),
+    equipment: 'Тренажер',
+    category: 'cardio' as const,
+    isCustom: false,
+  },
+  {
     name: 'Burpees',
     description: 'Full-body high-intensity exercise',
-    instructions:
-      '1. Start standing\n2. Drop into squat position\n3. Jump back to plank\n4. Do push-up (optional)\n5. Jump feet back to squat\n6. Jump up with arms overhead',
+    instructions: 'Squat, plank, push-up, jump',
     muscleGroups: JSON.stringify(['cardio', 'chest', 'legs']),
     equipment: 'Власна вага',
     category: 'cardio' as const,
     isCustom: false,
   },
   {
+    name: 'Jump Rope',
+    description: 'Jump rope conditioning',
+    instructions: 'Light on feet, steady tempo',
+    muscleGroups: JSON.stringify(['cardio', 'legs']),
+    equipment: 'Інше',
+    category: 'cardio' as const,
+    isCustom: false,
+  },
+  {
     name: 'Jumping Jacks',
-    description: 'Simple cardio exercise for warm-up or conditioning',
-    instructions:
-      '1. Start with feet together, arms at sides\n2. Jump feet apart while raising arms overhead\n3. Jump back to starting position\n4. Maintain steady rhythm\n5. Land softly on feet',
+    description: 'Simple cardio warm-up',
+    instructions: 'Arms overhead; soft landings',
     muscleGroups: JSON.stringify(['cardio']),
     equipment: 'Власна вага',
     category: 'cardio' as const,
     isCustom: false,
   },
 
-  // Flexibility Exercises
+  // Flexibility Exercises (minimal core set)
   {
     name: 'Downward Dog',
     description: 'Yoga pose that stretches and strengthens',
-    instructions:
-      '1. Start on hands and knees\n2. Tuck toes under\n3. Lift hips up and back\n4. Straighten legs if possible\n5. Hold and breathe deeply',
+    instructions: 'Lift hips up and back; breathe deeply',
     muscleGroups: JSON.stringify(['back', 'legs']),
     equipment: 'Власна вага',
     category: 'flexibility' as const,
@@ -165,9 +526,8 @@ export const exercisesSeedData = [
   },
   {
     name: "Child's Pose",
-    description: 'Relaxing yoga pose for back and hip stretching',
-    instructions:
-      '1. Kneel on floor\n2. Touch big toes together\n3. Sit back on heels\n4. Lean forward with arms extended\n5. Rest forehead on ground\n6. Breathe and relax',
+    description: 'Relaxing yoga pose for back and hips',
+    instructions: 'Sit back on heels; reach forward; relax',
     muscleGroups: JSON.stringify(['back']),
     equipment: 'Власна вага',
     category: 'flexibility' as const,
@@ -175,31 +535,19 @@ export const exercisesSeedData = [
   },
   {
     name: 'Hamstring Stretch',
-    description: 'Stretch for the back of the thighs',
-    instructions:
-      '1. Sit with one leg extended\n2. Bend other leg with foot against inner thigh\n3. Lean forward toward extended leg\n4. Hold stretch for 30 seconds\n5. Switch legs and repeat',
+    description: 'Posterior thigh stretch',
+    instructions: 'Lean to extended leg; hold 30s',
     muscleGroups: JSON.stringify(['legs']),
     equipment: 'Власна вага',
     category: 'flexibility' as const,
     isCustom: false,
   },
-  {
-    name: 'Shoulder Stretch',
-    description: 'Stretch for shoulder and chest muscles',
-    instructions:
-      '1. Stand tall with good posture\n2. Bring one arm across chest\n3. Use other arm to gently pull\n4. Hold for 30 seconds\n5. Switch arms and repeat',
-    muscleGroups: JSON.stringify(['shoulders']),
-    equipment: 'Власна вага',
-    category: 'flexibility' as const,
-    isCustom: false,
-  },
 
-  // Sport-specific exercises
+  // Sport-specific exercises (minimal)
   {
     name: 'Box Jumps',
-    description: 'Plyometric exercise for explosive power',
-    instructions:
-      '1. Stand in front of sturdy box\n2. Bend knees and swing arms back\n3. Jump explosively onto box\n4. Land softly with bent knees\n5. Step down carefully',
+    description: 'Plyometric jump onto a box',
+    instructions: 'Jump and land softly; step down',
     muscleGroups: JSON.stringify(['legs', 'glutes']),
     equipment: 'Інше',
     category: 'sport' as const,
@@ -207,9 +555,8 @@ export const exercisesSeedData = [
   },
   {
     name: 'Medicine Ball Slam',
-    description: 'Explosive full-body exercise',
-    instructions:
-      '1. Hold medicine ball overhead\n2. Engage core and slam ball down\n3. Squat down to pick up ball\n4. Return to standing position\n5. Repeat with force',
+    description: 'Explosive slam with med ball',
+    instructions: 'Slam ball with core engagement',
     muscleGroups: JSON.stringify(['abs', 'shoulders', 'back']),
     equipment: 'Інше',
     category: 'sport' as const,
@@ -220,24 +567,32 @@ export const exercisesSeedData = [
 export async function seedExercises() {
   console.log('🌱 Seeding exercises...')
 
-  // Check if exercises already exist
-  const existingExercises = await prisma.exercise.count({
-    where: { isCustom: false },
-  })
-
-  if (existingExercises > 0) {
-    console.log('✅ System exercises already exist, skipping seed')
-    return
-  }
-
-  // Insert exercises
   for (const exercise of exercisesSeedData) {
-    await prisma.exercise.create({
-      data: exercise,
+    const existing = await prisma.exercise.findFirst({
+      where: { name: exercise.name, isCustom: false },
+      select: { id: true },
     })
+
+    if (existing) {
+      await prisma.exercise.update({
+        where: { id: existing.id },
+        data: {
+          description: exercise.description,
+          instructions: exercise.instructions,
+          muscleGroups: exercise.muscleGroups,
+          equipment: exercise.equipment,
+          category: exercise.category,
+          isCustom: false,
+          isTrackedByDefault: Boolean((exercise as any).isTrackedByDefault),
+        },
+      })
+    } else {
+      await prisma.exercise.create({ data: exercise })
+    }
   }
 
-  console.log(`✅ Seeded ${exercisesSeedData.length} exercises`)
+  const count = await prisma.exercise.count({ where: { isCustom: false } })
+  console.log(`✅ Seeded/updated ${count} system exercises`)
 }
 
 export default seedExercises

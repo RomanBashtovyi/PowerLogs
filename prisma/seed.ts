@@ -8,6 +8,10 @@ async function main() {
 
   try {
     await seedExercises()
+    // Ensure uniqueness on reruns by removing strict count check inside seeder or upserting here if needed
+    // Example sanity check
+    const count = await prisma.exercise.count({ where: { isCustom: false } })
+    console.log(`ℹ️ System exercises in DB: ${count}`)
     console.log('✅ Database seeding completed successfully!')
   } catch (error) {
     console.error('❌ Error during seeding:', error)
