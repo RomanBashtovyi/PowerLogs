@@ -20,7 +20,7 @@ export default function SetForm({ set, onSubmit, onCancel, isLoading }: SetFormP
     reps: set?.reps ? set.reps.toString() : '',
     rpe: set?.rpe ? set.rpe.toString() : '',
     isWarmup: set?.isWarmup || false,
-    completed: set?.completed || false,
+    completed: true, // Auto-complete sets when created
     restTime: set?.restTime ? set.restTime.toString() : '',
     numSets: '1', // Number of sets to create (only for new sets)
     isPercentageBased: set?.isPercentageBased || false,
@@ -254,16 +254,6 @@ export default function SetForm({ set, onSubmit, onCancel, isLoading }: SetFormP
                 className="rounded border-input bg-background text-primary focus:ring-primary"
               />
               <span className="text-sm text-foreground">Warmup set</span>
-            </label>
-
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={formData.completed}
-                onChange={(e) => handleChange('completed', e.target.checked)}
-                className="rounded border-input bg-background text-primary focus:ring-primary"
-              />
-              <span className="text-sm text-foreground">Completed</span>
             </label>
           </div>
 

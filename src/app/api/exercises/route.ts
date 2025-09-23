@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
+export const dynamic = 'force-dynamic'
+
 // Schema for exercise creation/update
 const exerciseSchema = z.object({
   name: z.string().min(1, 'Exercise name is required'),

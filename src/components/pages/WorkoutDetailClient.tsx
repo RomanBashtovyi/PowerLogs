@@ -645,7 +645,6 @@ export default function WorkoutDetailClient({ workoutId }: WorkoutDetailClientPr
                                       Warmup
                                     </span>
                                   )}
-                                  {set.completed && <span className="text-green-600">✓</span>}
                                   <Button
                                     variant="outline"
                                     size="sm"

@@ -11,7 +11,7 @@ const setUpdateSchema = z.object({
   reps: z.number().min(1, 'Reps must be at least 1').optional(),
   rpe: z.number().min(1).max(10).nullable().optional(),
   isWarmup: z.boolean().optional(),
-  completed: z.boolean().optional(),
+  completed: z.boolean().default(true).optional(),
   restTime: z.number().min(0).nullable().optional(),
   isPercentageBased: z.boolean().optional(),
   percentageOf1RM: z.number().min(1).max(200, 'Percentage must be between 1% and 200%').nullable().optional(),

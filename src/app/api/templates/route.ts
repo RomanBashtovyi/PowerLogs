@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
+export const dynamic = 'force-dynamic'
+
 const templateCreateSchema = z.object({
   workoutId: z.string().optional(), // ID тренування для конвертації в шаблон
   name: z.string().min(1, 'Name is required'),

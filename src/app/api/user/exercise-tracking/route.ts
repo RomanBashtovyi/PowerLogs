@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
+export const dynamic = 'force-dynamic'
+
 const trackingUpdateSchema = z.object({
   exerciseId: z.string(),
   isTracked: z.boolean(),
