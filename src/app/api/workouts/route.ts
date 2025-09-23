@@ -1,10 +1,11 @@
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
-
-export const dynamic = 'force-dynamic'
 
 // Schema for workout creation/update
 const workoutSchema = z.object({

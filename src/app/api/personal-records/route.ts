@@ -1,9 +1,10 @@
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
-
-export const dynamic = 'force-dynamic'
 
 // GET /api/personal-records - Get all personal records for the user
 export async function GET() {
