@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
+export const dynamic = 'force-dynamic'
+
 const setCreateSchema = z
   .object({
     weight: z.number().min(0, 'Weight must be non-negative').nullable().optional(),

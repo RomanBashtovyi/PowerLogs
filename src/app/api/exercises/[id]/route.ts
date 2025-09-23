@@ -6,10 +6,6 @@ import { z } from 'zod'
 
 export const dynamic = 'force-dynamic'
 
-export async function generateStaticParams() {
-  return []
-}
-
 const exerciseSchema = z.object({
   name: z.string().min(1, 'Exercise name is required'),
   description: z.string().optional(),

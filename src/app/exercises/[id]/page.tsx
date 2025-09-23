@@ -3,9 +3,7 @@ import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
 import { ExerciseDetailClient } from '@/components/pages'
 
-export async function generateStaticParams() {
-  return []
-}
+export const dynamic = 'force-dynamic'
 
 interface ExerciseDetailPageProps {
   params: {

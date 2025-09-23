@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
+export const dynamic = 'force-dynamic'
+
 const setUpdateSchema = z.object({
   weight: z.number().min(0, 'Weight must be non-negative').nullable().optional(),
   reps: z.number().min(1, 'Reps must be at least 1').optional(),

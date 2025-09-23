@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
+export const dynamic = 'force-dynamic'
+
 const workoutExerciseSchema = z.object({
   exerciseId: z.string().min(1, 'Exercise ID is required'),
   order: z.number().min(0, 'Order must be non-negative'),
