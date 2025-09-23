@@ -95,6 +95,11 @@
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
   }
+
+  /* Safe-area padding for bottom nav overlap on mobile */
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
 }
 
 /* Dark theme improvements */

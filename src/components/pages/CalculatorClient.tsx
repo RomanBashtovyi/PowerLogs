@@ -99,16 +99,16 @@ export default function CalculatorClient(_props: Props) {
   }
 
   return (
-    <main className="mx-auto max-w-3xl p-6 space-y-6">
+    <main className="mx-auto max-w-3xl p-4 md:p-6 space-y-6 pb-24 md:pb-10 safe-bottom">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
-      <h1 className="text-2xl font-semibold">1RM Calculator</h1>
+      <h1 className="text-2xl md:text-3xl font-semibold">1RM Calculator</h1>
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
         <div>
           <label className="block text-sm mb-1 text-foreground">{t('weight') ?? 'Weight'}</label>
           <input
             type="number"
-            className="w-full border rounded px-3 py-2 bg-background text-foreground"
+            className="w-full border rounded px-3 py-3 md:py-2 bg-background text-foreground"
             min={0}
             value={weight}
             placeholder="0"
@@ -119,7 +119,7 @@ export default function CalculatorClient(_props: Props) {
           <label className="block text-sm mb-1 text-foreground">{t('reps') ?? 'Reps'}</label>
           <input
             type="number"
-            className="w-full border rounded px-3 py-2 bg-background text-foreground"
+            className="w-full border rounded px-3 py-3 md:py-2 bg-background text-foreground"
             min={1}
             value={reps}
             placeholder="0"
@@ -129,7 +129,7 @@ export default function CalculatorClient(_props: Props) {
         <div>
           <label className="block text-sm mb-1 text-foreground">{t('formula') ?? 'Formula'}</label>
           <select
-            className="w-full border rounded px-3 py-2 bg-background text-foreground"
+            className="w-full border rounded px-3 py-3 md:py-2 bg-background text-foreground"
             value={formula}
             onChange={(e) => setFormula(e.target.value as FormulaKey)}
           >
@@ -145,8 +145,8 @@ export default function CalculatorClient(_props: Props) {
           <span className="text-sm text-muted-foreground">Estimated 1RM:</span>
           <span className="text-2xl font-bold text-foreground">{Math.round(oneRepMax) || 0}</span>
         </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full border rounded">
+        <div className="overflow-x-auto -mx-2 md:mx-0">
+          <table className="min-w-full border rounded text-sm md:text-base">
             <thead>
               <tr className="bg-accent">
                 <th className="text-left px-3 py-2 border">%</th>
@@ -165,11 +165,11 @@ export default function CalculatorClient(_props: Props) {
         </div>
       </section>
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 items-end">
         <div>
           <label className="block text-sm mb-1 text-foreground">{t('exercise') ?? 'Exercise'}</label>
           <select
-            className="w-full border rounded px-3 py-2 bg-background text-foreground"
+            className="w-full border rounded px-3 py-3 md:py-2 bg-background text-foreground"
             value={selectedExerciseId}
             onChange={(e) => setSelectedExerciseId(e.target.value)}
           >
@@ -181,15 +181,21 @@ export default function CalculatorClient(_props: Props) {
             ))}
           </select>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-col sm:flex-row">
           <Button
             variant="fitness"
             onClick={() => navigator.clipboard.writeText(String(Math.round(oneRepMax) || 0))}
             disabled={!oneRepMax}
+            className="w-full sm:w-auto"
           >
             {t('copy1RM') ?? 'Copy 1RM'}
           </Button>
-          <Button variant="fitness" onClick={onSetAsPR} disabled={!selectedExerciseId || !oneRepMax || saving}>
+          <Button
+            variant="fitness"
+            onClick={onSetAsPR}
+            disabled={!selectedExerciseId || !oneRepMax || saving}
+            className="w-full sm:w-auto"
+          >
             {saving ? (t('saving') ?? 'Saving…') : (t('setAsPR') ?? 'Set as PR')}
           </Button>
         </div>

@@ -25,6 +25,7 @@ export default function Navigation() {
     { href: '/exercises', label: t('exercises'), icon: '💪' },
   ]
   const secondaryItems = [
+    { href: '/profile', label: 'Profile', icon: '👤' },
     { href: '/templates', label: 'Templates', icon: '📋' },
     { href: '/dashboard/progress-tracking', label: t('progressTracking'), icon: '📈' },
     { href: '/dashboard/calendar', label: 'Calendar', icon: '📅' },
@@ -188,7 +189,7 @@ export default function Navigation() {
       </nav>
 
       {/* Bottom Navigation for Mobile */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t border-border z-50">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t border-border z-50 safe-bottom">
         <div className="grid grid-cols-4 gap-1">
           {primaryItems.map((item) => {
             const isActive = pathname === item.href
