@@ -49,15 +49,51 @@ PowerLogs - це сучасний веб-додаток для відстеже�
 
 ### Головна сторінка
 
-![Landing Page](https://via.placeholder.com/800x400/1a1a1a/ffffff?text=Landing+Page)
+<div align="center">
+  <img src="/public/screenshots/home.png" alt="Головна сторінка" width="600" />
+</div>
 
 ### Дашборд
 
-![Dashboard](https://via.placeholder.com/800x400/1a1a1a/ffffff?text=Dashboard)
+<div align="center">
+  <img src="/public/screenshots/dashoboard.png" alt="Дашборд" width="600" />
+</div>
 
 ### Тренування
 
-![Workouts](https://via.placeholder.com/800x400/1a1a1a/ffffff?text=Workouts)
+<div align="center">
+  <img src="/public/screenshots/workouts.png" alt="Список тренувань" width="600" />
+</div>
+
+### Деталі тренування
+
+<div align="center">
+  <img src="/public/screenshots/workouts-details.png" alt="Деталі тренування" width="600" />
+</div>
+
+### Вправи
+
+<div align="center">
+  <img src="/public/screenshots/exercises.png" alt="Бібліотека вправ" width="600" />
+</div>
+
+### Шаблони тренувань
+
+<div align="center">
+  <img src="/public/screenshots/templates.png" alt="Шаблони тренувань" width="600" />
+</div>
+
+### Календар
+
+<div align="center">
+  <img src="/public/screenshots/calendar.png" alt="Календар тренувань" width="600" />
+</div>
+
+### Відстеження прогресу
+
+<div align="center">
+  <img src="/public/screenshots/progress-tracking.png" alt="Відстеження прогресу" width="600" />
+</div>
 
 ## 🛠️ Встановлення та запуск
 
