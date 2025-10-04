@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useLanguage } from '@/components/providers'
+import { useTranslations } from '@/hooks'
 import { Button } from '@/components/ui/button'
 import PersonalRecordModal from './PersonalRecordModal'
 import { PersonalRecord, Exercise } from '@/types/workout'
@@ -17,8 +17,9 @@ export default function PersonalRecordManager({
   onRecordUpdated,
   className = '',
 }: PersonalRecordManagerProps) {
-  const { t } = useLanguage()
-  const [personalRecord, setPersonalRecord] = useState<PersonalRecord | null>(null)
+  const { t } = useTranslations()
+  const [personalRecord, setPersonalRecord] =
+    useState<PersonalRecord | null>(null)
   const [loading, setLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [modalLoading, setModalLoading] = useState(false)
@@ -35,7 +36,9 @@ export default function PersonalRecordManager({
   const fetchPersonalRecord = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/personal-records/${exercise.id}`)
+      const response = await fetch(
+        `/api/personal-records/${exercise.id}`
+      )
 
       if (response.ok) {
         const record = await response.json()
@@ -44,10 +47,17 @@ export default function PersonalRecordManager({
         // No personal record exists for this exercise - this is normal
         setPersonalRecord(null)
       } else {
-        console.error('Error fetching personal record:', response.status, response.statusText)
+        console.error(
+          'Error fetching personal record:',
+          response.status,
+          response.statusText
+        )
       }
     } catch (error) {
-      console.error('Error fetching personal record:', error)
+      console.error(
+        'Error fetching personal record:',
+        error
+      )
     } finally {
       setLoading(false)
       setHasLoaded(true)
@@ -61,18 +71,21 @@ export default function PersonalRecordManager({
   }) => {
     try {
       setModalLoading(true)
-      const response = await fetch('/api/personal-records', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          exerciseId: exercise.id,
-          recordType: record.recordType,
-          ...(record.recordType === 'weight'
-            ? { oneRepMax: record.oneRepMax, unit: 'kg' }
-            : { maxReps: record.maxReps }),
-          notes: null,
-        }),
-      })
+      const response = await fetch(
+        '/api/personal-records',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            exerciseId: exercise.id,
+            recordType: record.recordType,
+            ...(record.recordType === 'weight'
+              ? { oneRepMax: record.oneRepMax, unit: 'kg' }
+              : { maxReps: record.maxReps }),
+            notes: null,
+          }),
+        }
+      )
 
       if (response.ok) {
         const updatedRecord = await response.json()
@@ -82,10 +95,16 @@ export default function PersonalRecordManager({
         onRecordUpdated?.(updatedRecord)
       } else {
         const errorData = await response.json()
-        console.error('Error updating personal record:', errorData.error)
+        console.error(
+          'Error updating personal record:',
+          errorData.error
+        )
       }
     } catch (error) {
-      console.error('Error updating personal record:', error)
+      console.error(
+        'Error updating personal record:',
+        error
+      )
     } finally {
       setModalLoading(false)
     }
@@ -96,9 +115,12 @@ export default function PersonalRecordManager({
 
     try {
       setLoading(true)
-      const response = await fetch(`/api/personal-records/${exercise.id}`, {
-        method: 'DELETE',
-      })
+      const response = await fetch(
+        `/api/personal-records/${exercise.id}`,
+        {
+          method: 'DELETE',
+        }
+      )
 
       if (response.ok) {
         setPersonalRecord(null)
@@ -108,7 +130,10 @@ export default function PersonalRecordManager({
         console.error('Error deleting personal record')
       }
     } catch (error) {
-      console.error('Error deleting personal record:', error)
+      console.error(
+        'Error deleting personal record:',
+        error
+      )
     } finally {
       setLoading(false)
     }
@@ -133,7 +158,10 @@ export default function PersonalRecordManager({
         <div className="space-y-3 border-t pt-3 mt-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h4 className="text-sm font-medium text-foreground">🏆 {t('personalRecord') || 'Personal Record'}</h4>
+              <h4 className="text-sm font-medium text-foreground">
+                🏆{' '}
+                {t('personalRecord') || 'Personal Record'}
+              </h4>
               <Button
                 variant="ghost"
                 size="sm"
@@ -144,15 +172,23 @@ export default function PersonalRecordManager({
               </Button>
             </div>
             {!loading && (
-              <Button variant="outline" size="sm" onClick={() => setShowModal(true)}>
-                {personalRecord ? t('update') || 'Update' : t('setPR') || 'Set PR'}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowModal(true)}
+              >
+                {personalRecord
+                  ? t('update') || 'Update'
+                  : t('setPR') || 'Set PR'}
               </Button>
             )}
           </div>
 
           {loading ? (
             <div className="bg-muted/30 rounded-lg p-3 text-center">
-              <p className="text-sm text-muted-foreground">{t('loading') || 'Loading...'}</p>
+              <p className="text-sm text-muted-foreground">
+                {t('loading') || 'Loading...'}
+              </p>
             </div>
           ) : personalRecord ? (
             <div className="bg-accent/10 rounded-lg p-3 space-y-2">
@@ -173,20 +209,29 @@ export default function PersonalRecordManager({
                 </Button>
               </div>
               <p className="text-sm text-muted-foreground">
-                {personalRecord.recordType === 'weight' ? t('oneRepMax') || '1RM' : t('maxReps') || 'Max Reps'} •{' '}
-                {t('setOn') || 'Set on'}: {new Date(personalRecord.dateSet).toLocaleDateString()}
+                {personalRecord.recordType === 'weight'
+                  ? t('oneRepMax') || '1RM'
+                  : t('maxReps') || 'Max Reps'}{' '}
+                • {t('setOn') || 'Set on'}:{' '}
+                {new Date(
+                  personalRecord.dateSet
+                ).toLocaleDateString()}
               </p>
               {personalRecord.notes && (
                 <p className="text-sm text-muted-foreground">
-                  {t('notes') || 'Notes'}: {personalRecord.notes}
+                  {t('notes') || 'Notes'}:{' '}
+                  {personalRecord.notes}
                 </p>
               )}
             </div>
           ) : (
             <div className="bg-muted/30 rounded-lg p-3 text-center">
-              <p className="text-sm text-muted-foreground">{t('noPRSet') || 'No personal record set'}</p>
+              <p className="text-sm text-muted-foreground">
+                {t('noPRSet') || 'No personal record set'}
+              </p>
               <p className="text-xs text-muted-foreground mt-1">
-                {t('setPRHelp') || 'Set your 1RM to use percentage-based programming'}
+                {t('setPRHelp') ||
+                  'Set your 1RM to use percentage-based programming'}
               </p>
             </div>
           )}
@@ -201,9 +246,13 @@ export default function PersonalRecordManager({
         currentRecord={
           personalRecord
             ? {
-                recordType: personalRecord.recordType as 'weight' | 'reps',
-                oneRepMax: personalRecord.oneRepMax ?? undefined,
-                maxReps: personalRecord.maxReps ?? undefined,
+                recordType: personalRecord.recordType as
+                  | 'weight'
+                  | 'reps',
+                oneRepMax:
+                  personalRecord.oneRepMax ?? undefined,
+                maxReps:
+                  personalRecord.maxReps ?? undefined,
               }
             : undefined
         }

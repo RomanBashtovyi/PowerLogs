@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useLanguage } from '@/components/providers'
+import { useTranslations } from '@/hooks'
 import { Button } from '@/components/ui/button'
 import { Workout } from '@/types/workout'
 
@@ -22,23 +22,32 @@ interface WorkoutFormData {
   isTemplate: boolean
 }
 
-export default function WorkoutForm({ workout, onSubmit, onCancel, isLoading }: WorkoutFormProps) {
-  const { t } = useLanguage()
+export default function WorkoutForm({
+  workout,
+  onSubmit,
+  onCancel,
+  isLoading,
+}: WorkoutFormProps) {
+  const { t } = useTranslations()
   const router = useRouter()
 
   const initialDateStr = workout?.date
     ? new Date(workout.date).toISOString().split('T')[0]
     : new Date().toISOString().split('T')[0]
-  const [formData, setFormData] = useState<WorkoutFormData>({
-    name: workout?.name || initialDateStr,
-    description: workout?.description || '',
-    date: initialDateStr,
-    duration: workout?.duration ?? 120,
-    notes: workout?.notes || '',
-    isTemplate: workout?.isTemplate || false,
-  })
+  const [formData, setFormData] = useState<WorkoutFormData>(
+    {
+      name: workout?.name || initialDateStr,
+      description: workout?.description || '',
+      date: initialDateStr,
+      duration: workout?.duration ?? 120,
+      notes: workout?.notes || '',
+      isTemplate: workout?.isTemplate || false,
+    }
+  )
 
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [errors, setErrors] = useState<
+    Record<string, string>
+  >({})
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {}
@@ -62,7 +71,9 @@ export default function WorkoutForm({ workout, onSubmit, onCancel, isLoading }: 
 
     try {
       // Add time to date for proper datetime format
-      const dateTime = new Date(formData.date + 'T12:00:00').toISOString()
+      const dateTime = new Date(
+        formData.date + 'T12:00:00'
+      ).toISOString()
 
       const submitData = {
         ...formData,
@@ -73,7 +84,9 @@ export default function WorkoutForm({ workout, onSubmit, onCancel, isLoading }: 
         await onSubmit(submitData)
       } else {
         // Default submission to API
-        const url = workout ? `/api/workouts/${workout.id}` : '/api/workouts'
+        const url = workout
+          ? `/api/workouts/${workout.id}`
+          : '/api/workouts'
         const method = workout ? 'PUT' : 'POST'
 
         const response = await fetch(url, {
@@ -90,7 +103,9 @@ export default function WorkoutForm({ workout, onSubmit, onCancel, isLoading }: 
       }
     } catch (error) {
       console.error('Error saving workout:', error)
-      setErrors({ submit: 'Failed to save workout. Please try again.' })
+      setErrors({
+        submit: 'Failed to save workout. Please try again.',
+      })
     }
   }
 
@@ -107,30 +122,50 @@ export default function WorkoutForm({ workout, onSubmit, onCancel, isLoading }: 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Workout Name */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-foreground mb-2"
+          >
             {t('workoutName')} *
           </label>
           <input
             type="text"
             id="name"
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                name: e.target.value,
+              })
+            }
             className="w-full px-4 py-3 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
             placeholder={t('workoutName')}
             disabled={isLoading}
           />
-          {errors.name && <p className="text-destructive text-sm mt-1">{errors.name}</p>}
+          {errors.name && (
+            <p className="text-destructive text-sm mt-1">
+              {errors.name}
+            </p>
+          )}
         </div>
 
         {/* Description */}
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-foreground mb-2">
+          <label
+            htmlFor="description"
+            className="block text-sm font-medium text-foreground mb-2"
+          >
             {t('workoutDescription')}
           </label>
           <textarea
             id="description"
             value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                description: e.target.value,
+              })
+            }
             rows={3}
             className="w-full px-4 py-3 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
             placeholder={t('workoutDescription')}
@@ -141,7 +176,10 @@ export default function WorkoutForm({ workout, onSubmit, onCancel, isLoading }: 
         {/* Date and Duration */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="date" className="block text-sm font-medium text-foreground mb-2">
+            <label
+              htmlFor="date"
+              className="block text-sm font-medium text-foreground mb-2"
+            >
               {t('workoutDate')} *
             </label>
             <input
@@ -154,17 +192,27 @@ export default function WorkoutForm({ workout, onSubmit, onCancel, isLoading }: 
                 setFormData((prev) => ({
                   ...prev,
                   date: newDate,
-                  name: !prev.name || prev.name === prevDate ? newDate : prev.name,
+                  name:
+                    !prev.name || prev.name === prevDate
+                      ? newDate
+                      : prev.name,
                 }))
               }}
               className="w-full px-4 py-3 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
               disabled={isLoading}
             />
-            {errors.date && <p className="text-destructive text-sm mt-1">{errors.date}</p>}
+            {errors.date && (
+              <p className="text-destructive text-sm mt-1">
+                {errors.date}
+              </p>
+            )}
           </div>
 
           <div>
-            <label htmlFor="duration" className="block text-sm font-medium text-foreground mb-2">
+            <label
+              htmlFor="duration"
+              className="block text-sm font-medium text-foreground mb-2"
+            >
               {t('workoutDuration')} (minutes)
             </label>
             <input
@@ -172,7 +220,12 @@ export default function WorkoutForm({ workout, onSubmit, onCancel, isLoading }: 
               id="duration"
               value={formData.duration || ''}
               onChange={(e) =>
-                setFormData({ ...formData, duration: e.target.value ? Number(e.target.value) : undefined })
+                setFormData({
+                  ...formData,
+                  duration: e.target.value
+                    ? Number(e.target.value)
+                    : undefined,
+                })
               }
               className="w-full px-4 py-3 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
               placeholder="120"
@@ -184,13 +237,21 @@ export default function WorkoutForm({ workout, onSubmit, onCancel, isLoading }: 
 
         {/* Notes */}
         <div>
-          <label htmlFor="notes" className="block text-sm font-medium text-foreground mb-2">
+          <label
+            htmlFor="notes"
+            className="block text-sm font-medium text-foreground mb-2"
+          >
             {t('workoutNotes')}
           </label>
           <textarea
             id="notes"
             value={formData.notes}
-            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                notes: e.target.value,
+              })
+            }
             rows={3}
             className="w-full px-4 py-3 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
             placeholder={t('workoutNotes')}
@@ -204,11 +265,19 @@ export default function WorkoutForm({ workout, onSubmit, onCancel, isLoading }: 
             type="checkbox"
             id="isTemplate"
             checked={formData.isTemplate}
-            onChange={(e) => setFormData({ ...formData, isTemplate: e.target.checked })}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                isTemplate: e.target.checked,
+              })
+            }
             className="w-4 h-4 text-primary focus:ring-primary border-border rounded"
             disabled={isLoading}
           />
-          <label htmlFor="isTemplate" className="text-sm font-medium text-foreground">
+          <label
+            htmlFor="isTemplate"
+            className="text-sm font-medium text-foreground"
+          >
             Save as template
           </label>
         </div>
@@ -216,17 +285,32 @@ export default function WorkoutForm({ workout, onSubmit, onCancel, isLoading }: 
         {/* Submit Error */}
         {errors.submit && (
           <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3">
-            <p className="text-destructive text-sm">{errors.submit}</p>
+            <p className="text-destructive text-sm">
+              {errors.submit}
+            </p>
           </div>
         )}
 
         {/* Actions */}
         <div className="flex gap-3 pt-4">
-          <Button type="submit" disabled={isLoading} className="flex-1">
-            {isLoading ? t('loading') : workout ? t('editWorkout') : t('createWorkout')}
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="flex-1"
+          >
+            {isLoading
+              ? t('loading')
+              : workout
+                ? t('editWorkout')
+                : t('createWorkout')}
           </Button>
 
-          <Button type="button" variant="outline" onClick={handleCancel} disabled={isLoading}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleCancel}
+            disabled={isLoading}
+          >
             {t('cancel')}
           </Button>
         </div>

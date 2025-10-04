@@ -17,7 +17,10 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
     }
 
     const user = await prisma.user.findUnique({
@@ -25,7 +28,10 @@ export async function GET(request: NextRequest) {
     })
 
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      )
     }
 
     // Get all exercises with tracking status
@@ -49,15 +55,28 @@ export async function GET(request: NextRequest) {
     })
 
     // Transform data to include tracking status
-    const exercisesWithTracking = exercises.map((exercise) => ({
-      ...exercise,
-      isTracked: exercise.userTracking.length > 0 ? exercise.userTracking[0].isTracked : exercise.isTrackedByDefault, // Default to isTrackedByDefault if no preference set
-    }))
+    const exercisesWithTracking = exercises.map(
+      (exercise) => ({
+        ...exercise,
+        isTracked:
+          exercise.userTracking.length > 0
+            ? exercise.userTracking[0].isTracked
+            : exercise.isTrackedByDefault, // Default to isTrackedByDefault if no preference set
+      })
+    )
 
-    return NextResponse.json({ exercises: exercisesWithTracking })
+    return NextResponse.json({
+      exercises: exercisesWithTracking,
+    })
   } catch (error) {
-    console.error('Error fetching exercise tracking:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error(
+      'Error fetching exercise tracking:',
+      error
+    )
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
   }
 }
 
@@ -66,7 +85,10 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
     }
 
     const user = await prisma.user.findUnique({
@@ -74,11 +96,15 @@ export async function POST(request: NextRequest) {
     })
 
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      )
     }
 
     const body = await request.json()
-    const { exerciseId, isTracked } = trackingUpdateSchema.parse(body)
+    const { exerciseId, isTracked } =
+      trackingUpdateSchema.parse(body)
 
     // Check if exercise exists and user has access
     const exercise = await prisma.exercise.findFirst({
@@ -92,35 +118,53 @@ export async function POST(request: NextRequest) {
     })
 
     if (!exercise) {
-      return NextResponse.json({ error: 'Exercise not found or access denied' }, { status: 404 })
+      return NextResponse.json(
+        {
+          error: 'Вправу не знайдено або доступ заборонено',
+        },
+        { status: 404 }
+      )
     }
 
     // Upsert tracking preference
-    const tracking = await prisma.userExerciseTracking.upsert({
-      where: {
-        userId_exerciseId: {
-          userId: user.id,
-          exerciseId: exerciseId,
+    const tracking =
+      await prisma.userExerciseTracking.upsert({
+        where: {
+          userId_exerciseId: {
+            userId: user.id,
+            exerciseId: exerciseId,
+          },
         },
-      },
-      update: {
-        isTracked,
-      },
-      create: {
-        userId: user.id,
-        exerciseId,
-        isTracked,
-      },
-    })
+        update: {
+          isTracked,
+        },
+        create: {
+          userId: user.id,
+          exerciseId,
+          isTracked,
+        },
+      })
 
     return NextResponse.json(tracking)
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Validation error', details: error.errors }, { status: 400 })
+      return NextResponse.json(
+        {
+          error: 'Validation error',
+          details: error.errors,
+        },
+        { status: 400 }
+      )
     }
 
-    console.error('Error updating exercise tracking:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error(
+      'Error updating exercise tracking:',
+      error
+    )
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
   }
 }
 
@@ -129,7 +173,10 @@ export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
     }
 
     const user = await prisma.user.findUnique({
@@ -137,7 +184,10 @@ export async function PUT(request: NextRequest) {
     })
 
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      )
     }
 
     // Get all exercises that should be tracked by default
@@ -170,7 +220,13 @@ export async function PUT(request: NextRequest) {
       trackedExercises: baseExercises.length,
     })
   } catch (error) {
-    console.error('Error auto-setting up exercise tracking:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error(
+      'Error auto-setting up exercise tracking:',
+      error
+    )
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
   }
 }

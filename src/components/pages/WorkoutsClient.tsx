@@ -2,18 +2,25 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useLanguage } from '@/components/providers'
+import { useTranslations } from '@/hooks'
 import { Button } from '@/components/ui/button'
 import { WorkoutCard } from '@/components/features/workout'
-import { ToastContainer, useToast } from '@/components/ui/Toast'
+import {
+  ToastContainer,
+  useToast,
+} from '@/components/ui/Toast'
 import ConfirmationModal from '@/components/ui/ConfirmationModal'
 import { useConfirmation } from '@/hooks/useConfirmation'
 import { Workout } from '@/types/workout'
 
 export default function WorkoutsClient() {
-  const { t } = useLanguage()
+  const { t } = useTranslations()
   const { toasts, removeToast, showError } = useToast()
-  const { confirmationState, showConfirmation, hideConfirmation } = useConfirmation()
+  const {
+    confirmationState,
+    showConfirmation,
+    hideConfirmation,
+  } = useConfirmation()
   const [workouts, setWorkouts] = useState<Workout[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -56,17 +63,24 @@ export default function WorkoutsClient() {
     }
   }
 
-  const executeDeleteWorkout = async (workoutId: string) => {
+  const executeDeleteWorkout = async (
+    workoutId: string
+  ) => {
     try {
-      const response = await fetch(`/api/workouts/${workoutId}`, {
-        method: 'DELETE',
-      })
+      const response = await fetch(
+        `/api/workouts/${workoutId}`,
+        {
+          method: 'DELETE',
+        }
+      )
 
       if (!response.ok) {
         throw new Error('Failed to delete workout')
       }
 
-      setWorkouts(workouts.filter((w) => w.id !== workoutId))
+      setWorkouts(
+        workouts.filter((w) => w.id !== workoutId)
+      )
     } catch (err) {
       console.error('Error deleting workout:', err)
       showError('Failed to delete workout')
@@ -75,8 +89,12 @@ export default function WorkoutsClient() {
 
   const filteredWorkouts = workouts.filter(
     (workout) =>
-      workout.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      workout.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      workout.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      workout.description
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase())
   )
 
   if (loading) {
@@ -86,7 +104,9 @@ export default function WorkoutsClient() {
           <div className="flex justify-center items-center py-12">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">{t('loading')}</p>
+              <p className="text-muted-foreground">
+                {t('loading')}
+              </p>
             </div>
           </div>
         </div>
@@ -100,14 +120,21 @@ export default function WorkoutsClient() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">{t('allWorkouts')}</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+              {t('allWorkouts')}
+            </h1>
             <p className="text-muted-foreground mt-1">
-              {workouts.length} {workouts.length === 1 ? 'workout' : 'workouts'}
+              {workouts.length}{' '}
+              {workouts.length === 1
+                ? 'workout'
+                : 'workouts'}
             </p>
           </div>
 
           <Link href="/workouts/new">
-            <Button className="w-full sm:w-auto">➕ {t('createWorkout')}</Button>
+            <Button className="w-full sm:w-auto">
+              ➕ {t('createWorkout')}
+            </Button>
           </Link>
         </div>
 
@@ -126,7 +153,12 @@ export default function WorkoutsClient() {
         {error && (
           <div className="bg-destructive/10 border border-destructive/20 rounded-md p-4 mb-6">
             <p className="text-destructive">{error}</p>
-            <Button variant="outline" size="sm" onClick={fetchWorkouts} className="mt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={fetchWorkouts}
+              className="mt-2"
+            >
               Try Again
             </Button>
           </div>
@@ -137,10 +169,14 @@ export default function WorkoutsClient() {
           <div className="text-center py-12">
             <div className="text-6xl mb-4">🏋️</div>
             <h3 className="text-xl font-semibold text-foreground mb-2">
-              {searchQuery ? 'No workouts found' : t('noWorkouts')}
+              {searchQuery
+                ? 'No workouts found'
+                : t('noWorkouts')}
             </h3>
             <p className="text-muted-foreground mb-6">
-              {searchQuery ? 'Try adjusting your search terms' : t('addFirstWorkout')}
+              {searchQuery
+                ? 'Try adjusting your search terms'
+                : t('addFirstWorkout')}
             </p>
             {!searchQuery && (
               <Link href="/workouts/new">
@@ -151,14 +187,23 @@ export default function WorkoutsClient() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredWorkouts.map((workout) => (
-              <WorkoutCard key={workout.id} workout={workout} onDelete={() => handleDeleteWorkout(workout.id)} />
+              <WorkoutCard
+                key={workout.id}
+                workout={workout}
+                onDelete={() =>
+                  handleDeleteWorkout(workout.id)
+                }
+              />
             ))}
           </div>
         )}
       </div>
 
       {/* Toast Notifications */}
-      <ToastContainer toasts={toasts} onRemove={removeToast} />
+      <ToastContainer
+        toasts={toasts}
+        onRemove={removeToast}
+      />
 
       {/* Confirmation Modal */}
       <ConfirmationModal

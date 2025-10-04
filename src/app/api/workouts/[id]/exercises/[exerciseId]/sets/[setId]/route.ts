@@ -7,14 +7,26 @@ import { z } from 'zod'
 export const dynamic = 'force-dynamic'
 
 const setUpdateSchema = z.object({
-  weight: z.number().min(0, 'Weight must be non-negative').nullable().optional(),
-  reps: z.number().min(1, 'Reps must be at least 1').optional(),
+  weight: z
+    .number()
+    .min(0, 'Weight must be non-negative')
+    .nullable()
+    .optional(),
+  reps: z
+    .number()
+    .min(1, 'Reps must be at least 1')
+    .optional(),
   rpe: z.number().min(1).max(10).nullable().optional(),
   isWarmup: z.boolean().optional(),
   completed: z.boolean().default(true).optional(),
   restTime: z.number().min(0).nullable().optional(),
   isPercentageBased: z.boolean().optional(),
-  percentageOf1RM: z.number().min(1).max(200, 'Percentage must be between 1% and 200%').nullable().optional(),
+  percentageOf1RM: z
+    .number()
+    .min(1)
+    .max(200, 'Percentage must be between 1% and 200%')
+    .nullable()
+    .optional(),
 })
 
 interface RouteParams {
@@ -26,11 +38,17 @@ interface RouteParams {
 }
 
 // PUT /api/workouts/[id]/exercises/[exerciseId]/sets/[setId] - Update set
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+export async function PUT(
+  request: NextRequest,
+  { params }: RouteParams
+) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
     }
 
     const user = await prisma.user.findUnique({
@@ -38,7 +56,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     })
 
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      )
     }
 
     // Check if workout exists and belongs to user
@@ -50,7 +71,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     })
 
     if (!workout) {
-      return NextResponse.json({ error: 'Workout not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'Тренування не знайдено' },
+        { status: 404 }
+      )
     }
 
     // Check if set exists and belongs to the workout exercise
@@ -65,7 +89,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     })
 
     if (!set) {
-      return NextResponse.json({ error: 'Set not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'Set not found' },
+        { status: 404 }
+      )
     }
 
     const body = await request.json()
@@ -79,20 +106,35 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(updatedSet)
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Validation error', details: error.errors }, { status: 400 })
+      return NextResponse.json(
+        {
+          error: 'Validation error',
+          details: error.errors,
+        },
+        { status: 400 }
+      )
     }
 
     console.error('Error updating set:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
   }
 }
 
 // DELETE /api/workouts/[id]/exercises/[exerciseId]/sets/[setId] - Delete set
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: RouteParams
+) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
     }
 
     const user = await prisma.user.findUnique({
@@ -100,7 +142,10 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     })
 
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      )
     }
 
     // Check if workout exists and belongs to user
@@ -112,7 +157,10 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     })
 
     if (!workout) {
-      return NextResponse.json({ error: 'Workout not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'Тренування не знайдено' },
+        { status: 404 }
+      )
     }
 
     // Check if set exists and belongs to the workout exercise
@@ -127,16 +175,24 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     })
 
     if (!set) {
-      return NextResponse.json({ error: 'Set not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'Set not found' },
+        { status: 404 }
+      )
     }
 
     await prisma.set.delete({
       where: { id: params.setId },
     })
 
-    return NextResponse.json({ message: 'Set deleted successfully' })
+    return NextResponse.json({
+      message: 'Set deleted successfully',
+    })
   } catch (error) {
     console.error('Error deleting set:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
   }
 }

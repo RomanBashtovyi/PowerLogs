@@ -8,7 +8,10 @@ export interface BaseComponentProps {
 
 export interface PageProps {
   params?: Record<string, string>
-  searchParams?: Record<string, string | string[] | undefined>
+  searchParams?: Record<
+    string,
+    string | string[] | undefined
+  >
 }
 
 export interface DashboardClientProps {
@@ -24,9 +27,5 @@ export interface ProviderProps {
 }
 
 export interface ThemeToggleProps {
-  className?: string
-}
-
-export interface LanguageToggleProps {
   className?: string
 }

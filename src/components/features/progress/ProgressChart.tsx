@@ -14,7 +14,7 @@ import {
   Bar,
 } from 'recharts'
 import { Button } from '@/components/ui/button'
-import { useLanguage } from '@/components/providers'
+import { useTranslations } from '@/hooks'
 
 interface ProgressDataPoint {
   date: string
@@ -47,10 +47,17 @@ interface ProgressChartProps {
   metric?: 'weight' | 'volume' | 'reps'
 }
 
-export default function ProgressChart({ exerciseProgress, metric = 'weight' }: ProgressChartProps) {
-  const { t } = useLanguage()
-  const [selectedMetric, setSelectedMetric] = useState<'weight' | 'volume' | 'reps'>(metric)
-  const [chartType, setChartType] = useState<'line' | 'bar'>('line')
+export default function ProgressChart({
+  exerciseProgress,
+  metric = 'weight',
+}: ProgressChartProps) {
+  const { t } = useTranslations()
+  const [selectedMetric, setSelectedMetric] = useState<
+    'weight' | 'volume' | 'reps'
+  >(metric)
+  const [chartType, setChartType] = useState<
+    'line' | 'bar'
+  >('line')
 
   const { exercise, data, summary } = exerciseProgress
 
@@ -94,8 +101,10 @@ export default function ProgressChart({ exerciseProgress, metric = 'weight' }: P
   }
 
   const getImprovementValue = () => {
-    if (selectedMetric === 'weight') return summary.improvement.weight
-    if (selectedMetric === 'volume') return summary.improvement.volume
+    if (selectedMetric === 'weight')
+      return summary.improvement.weight
+    if (selectedMetric === 'volume')
+      return summary.improvement.volume
 
     // Calculate reps improvement
     if (data.length > 1) {
@@ -106,18 +115,27 @@ export default function ProgressChart({ exerciseProgress, metric = 'weight' }: P
     return '0'
   }
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
         <div className="bg-background border border-input rounded-lg p-3 shadow-lg">
           <p className="font-medium">{label}</p>
-          <p className="text-sm text-muted-foreground">{data.fullDate}</p>
+          <p className="text-sm text-muted-foreground">
+            {data.fullDate}
+          </p>
           <div className="mt-2 space-y-1">
             <p style={{ color: getMetricColor() }}>
-              {getMetricLabel()}: <strong>{payload[0].value}</strong>
+              {getMetricLabel()}:{' '}
+              <strong>{payload[0].value}</strong>
             </p>
-            <p className="text-xs text-muted-foreground">Sets completed: {data.sets}</p>
+            <p className="text-xs text-muted-foreground">
+              Sets completed: {data.sets}
+            </p>
           </div>
         </div>
       )
@@ -130,33 +148,47 @@ export default function ProgressChart({ exerciseProgress, metric = 'weight' }: P
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
-          <h3 className="text-xl font-semibold text-foreground">{exercise.name}</h3>
-          <p className="text-sm text-muted-foreground capitalize">{exercise.category}</p>
+          <h3 className="text-xl font-semibold text-foreground">
+            {exercise.name}
+          </h3>
+          <p className="text-sm text-muted-foreground capitalize">
+            {exercise.category}
+          </p>
         </div>
 
         {/* Controls */}
         <div className="flex gap-2 mt-4 sm:mt-0">
           <div className="flex rounded-md border border-input">
-            {['weight', 'volume', 'reps'].map((metricOption) => (
-              <Button
-                key={metricOption}
-                variant={selectedMetric === metricOption ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setSelectedMetric(metricOption as any)}
-                className="rounded-none first:rounded-l-md last:rounded-r-md"
-              >
-                {metricOption === 'weight'
-                  ? t('weight')
-                  : metricOption === 'volume'
-                    ? t('volume') || 'Volume'
-                    : t('reps')}
-              </Button>
-            ))}
+            {['weight', 'volume', 'reps'].map(
+              (metricOption) => (
+                <Button
+                  key={metricOption}
+                  variant={
+                    selectedMetric === metricOption
+                      ? 'default'
+                      : 'ghost'
+                  }
+                  size="sm"
+                  onClick={() =>
+                    setSelectedMetric(metricOption as any)
+                  }
+                  className="rounded-none first:rounded-l-md last:rounded-r-md"
+                >
+                  {metricOption === 'weight'
+                    ? t('weight')
+                    : metricOption === 'volume'
+                      ? t('volume') || 'Volume'
+                      : t('reps')}
+                </Button>
+              )
+            )}
           </div>
 
           <div className="flex rounded-md border border-input">
             <Button
-              variant={chartType === 'line' ? 'default' : 'ghost'}
+              variant={
+                chartType === 'line' ? 'default' : 'ghost'
+              }
               size="sm"
               onClick={() => setChartType('line')}
               className="rounded-none rounded-l-md"
@@ -164,7 +196,9 @@ export default function ProgressChart({ exerciseProgress, metric = 'weight' }: P
               📈
             </Button>
             <Button
-              variant={chartType === 'bar' ? 'default' : 'ghost'}
+              variant={
+                chartType === 'bar' ? 'default' : 'ghost'
+              }
               size="sm"
               onClick={() => setChartType('bar')}
               className="rounded-none rounded-r-md"
@@ -178,22 +212,34 @@ export default function ProgressChart({ exerciseProgress, metric = 'weight' }: P
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="text-center">
-          <p className="text-2xl font-bold text-foreground">{summary.totalWorkouts}</p>
-          <p className="text-sm text-muted-foreground">{t('workouts')}</p>
+          <p className="text-2xl font-bold text-foreground">
+            {summary.totalWorkouts}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {t('workouts')}
+          </p>
         </div>
         <div className="text-center">
-          <p className="text-2xl font-bold text-green-600">+{getImprovementValue()}%</p>
-          <p className="text-sm text-muted-foreground">{t('update') || 'Improvement'}</p>
+          <p className="text-2xl font-bold text-green-600">
+            +{getImprovementValue()}%
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {t('update') || 'Improvement'}
+          </p>
         </div>
         <div className="text-center">
           <p className="text-2xl font-bold text-foreground">
             {selectedMetric === 'weight'
               ? summary.firstRecord.maxWeight
               : selectedMetric === 'volume'
-                ? Math.round(summary.firstRecord.totalVolume)
+                ? Math.round(
+                    summary.firstRecord.totalVolume
+                  )
                 : summary.firstRecord.maxReps}
           </p>
-          <p className="text-sm text-muted-foreground">{t('from')}</p>
+          <p className="text-sm text-muted-foreground">
+            {t('from')}
+          </p>
         </div>
         <div className="text-center">
           <p className="text-2xl font-bold text-foreground">
@@ -203,7 +249,9 @@ export default function ProgressChart({ exerciseProgress, metric = 'weight' }: P
                 ? Math.round(summary.lastRecord.totalVolume)
                 : summary.lastRecord.maxReps}
           </p>
-          <p className="text-sm text-muted-foreground">{t('to')}</p>
+          <p className="text-sm text-muted-foreground">
+            {t('to')}
+          </p>
         </div>
       </div>
 
@@ -212,26 +260,58 @@ export default function ProgressChart({ exerciseProgress, metric = 'weight' }: P
         <ResponsiveContainer width="100%" height="100%">
           {chartType === 'line' ? (
             <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-              <XAxis dataKey="date" className="text-xs" tick={{ fontSize: 12 }} />
-              <YAxis className="text-xs" tick={{ fontSize: 12 }} />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                className="opacity-30"
+              />
+              <XAxis
+                dataKey="date"
+                className="text-xs"
+                tick={{ fontSize: 12 }}
+              />
+              <YAxis
+                className="text-xs"
+                tick={{ fontSize: 12 }}
+              />
               <Tooltip content={<CustomTooltip />} />
               <Line
                 type="monotone"
                 dataKey={selectedMetric}
                 stroke={getMetricColor()}
                 strokeWidth={3}
-                dot={{ fill: getMetricColor(), strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, stroke: getMetricColor(), strokeWidth: 2 }}
+                dot={{
+                  fill: getMetricColor(),
+                  strokeWidth: 2,
+                  r: 4,
+                }}
+                activeDot={{
+                  r: 6,
+                  stroke: getMetricColor(),
+                  strokeWidth: 2,
+                }}
               />
             </LineChart>
           ) : (
             <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-              <XAxis dataKey="date" className="text-xs" tick={{ fontSize: 12 }} />
-              <YAxis className="text-xs" tick={{ fontSize: 12 }} />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                className="opacity-30"
+              />
+              <XAxis
+                dataKey="date"
+                className="text-xs"
+                tick={{ fontSize: 12 }}
+              />
+              <YAxis
+                className="text-xs"
+                tick={{ fontSize: 12 }}
+              />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey={selectedMetric} fill={getMetricColor()} radius={[4, 4, 0, 0]} />
+              <Bar
+                dataKey={selectedMetric}
+                fill={getMetricColor()}
+                radius={[4, 4, 0, 0]}
+              />
             </BarChart>
           )}
         </ResponsiveContainer>
@@ -240,7 +320,9 @@ export default function ProgressChart({ exerciseProgress, metric = 'weight' }: P
       {/* No data message */}
       {chartData.length === 0 && (
         <div className="text-center py-8">
-          <p className="text-muted-foreground">{t('noProgressFound')}</p>
+          <p className="text-muted-foreground">
+            {t('noProgressFound')}
+          </p>
         </div>
       )}
     </div>

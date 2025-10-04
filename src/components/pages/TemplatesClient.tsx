@@ -4,18 +4,23 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { format } from 'date-fns'
-import { uk, enUS } from 'date-fns/locale'
-import { useLanguage } from '@/components/providers'
+import { uk } from 'date-fns/locale'
+import { useTranslations } from '@/hooks'
 import { Button } from '@/components/ui/button'
-import { ToastContainer, useToast } from '@/components/ui/Toast'
+import {
+  ToastContainer,
+  useToast,
+} from '@/components/ui/Toast'
 import ConfirmationModal from '@/components/ui/ConfirmationModal'
 import { Workout } from '@/types/workout'
 import { useConfirmation } from '@/hooks/useConfirmation'
 
 export default function TemplatesClient() {
-  const { t, language } = useLanguage()
+  const { t } = useTranslations()
+  const language = 'uk'
   const router = useRouter()
-  const { toasts, removeToast, showSuccess, showError } = useToast()
+  const { toasts, removeToast, showSuccess, showError } =
+    useToast()
   const {
     confirmationState,
     showConfirmation,
@@ -50,7 +55,10 @@ export default function TemplatesClient() {
     }
   }
 
-  const handleUseTemplate = async (templateId: string, templateName: string) => {
+  const handleUseTemplate = async (
+    templateId: string,
+    templateName: string
+  ) => {
     const confirmed = await showConfirmation({
       title: t('useTemplate') || 'Use Template',
       message: `${t('useTemplateConfirm') || 'Use template'} "${templateName}" ${t('forTodaysWorkout') || "for today's workout"}?`,
@@ -63,33 +71,54 @@ export default function TemplatesClient() {
     }
   }
 
-  const executeUseTemplate = async (templateId: string, templateName: string, useToday: boolean) => {
+  const executeUseTemplate = async (
+    templateId: string,
+    templateName: string,
+    useToday: boolean
+  ) => {
     try {
-      const response = await fetch(`/api/templates/${templateId}/use`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          date: useToday ? new Date().toISOString() : undefined,
-        }),
-      })
+      const response = await fetch(
+        `/api/templates/${templateId}/use`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            date: useToday
+              ? new Date().toISOString()
+              : undefined,
+          }),
+        }
+      )
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to create workout from template')
+        throw new Error(
+          errorData.error ||
+            'Не вдалося створити тренування з шаблону'
+        )
       }
 
       const workout = await response.json()
-      showSuccess(`Workout created from template "${templateName}"`)
+      showSuccess(
+        `Workout created from template "${templateName}"`
+      )
 
       // Redirect to the new workout
       router.push(`/workouts/${workout.id}`)
     } catch (err) {
       console.error('Error using template:', err)
-      showError(err instanceof Error ? err.message : 'Failed to create workout')
+      showError(
+        err instanceof Error
+          ? err.message
+          : 'Не вдалося створити тренування'
+      )
     }
   }
 
-  const handleDeleteTemplate = async (templateId: string, templateName: string) => {
+  const handleDeleteTemplate = async (
+    templateId: string,
+    templateName: string
+  ) => {
     const confirmed = await showConfirmation({
       title: 'Delete Template',
       message: `Are you sure you want to delete the template "${templateName}"? This action cannot be undone.`,
@@ -104,15 +133,20 @@ export default function TemplatesClient() {
     try {
       setConfirmationLoading(true)
 
-      const response = await fetch(`/api/templates/${templateId}`, {
-        method: 'DELETE',
-      })
+      const response = await fetch(
+        `/api/templates/${templateId}`,
+        {
+          method: 'DELETE',
+        }
+      )
 
       if (!response.ok) {
         throw new Error('Failed to delete template')
       }
 
-      showSuccess(`Template "${templateName}" deleted successfully`)
+      showSuccess(
+        `Template "${templateName}" deleted successfully`
+      )
       await fetchTemplates() // Refresh list
     } catch (err) {
       console.error('Error deleting template:', err)
@@ -123,13 +157,17 @@ export default function TemplatesClient() {
   }
 
   const formatDate = (date: Date) => {
-    const locale = language === 'uk' ? uk : enUS
+    const locale = uk
     return format(date, 'MMM dd, yyyy', { locale })
   }
 
   const getTemplateStats = (template: Workout) => {
     const exerciseCount = template.exercises?.length || 0
-    const setCount = template.exercises?.reduce((total, ex) => total + (ex.sets?.length || 0), 0) || 0
+    const setCount =
+      template.exercises?.reduce(
+        (total, ex) => total + (ex.sets?.length || 0),
+        0
+      ) || 0
 
     return { exerciseCount, setCount }
   }
@@ -141,7 +179,9 @@ export default function TemplatesClient() {
           <div className="flex justify-center items-center py-12">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">{t('loading')}</p>
+              <p className="text-muted-foreground">
+                {t('loading')}
+              </p>
             </div>
           </div>
         </div>
@@ -155,9 +195,15 @@ export default function TemplatesClient() {
         <div className="max-w-4xl mx-auto px-4 py-6">
           <div className="text-center py-12">
             <div className="text-6xl mb-4">😔</div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">Something went wrong</h3>
-            <p className="text-muted-foreground mb-4">{error}</p>
-            <Button onClick={fetchTemplates}>Try Again</Button>
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              Something went wrong
+            </h3>
+            <p className="text-muted-foreground mb-4">
+              {error}
+            </p>
+            <Button onClick={fetchTemplates}>
+              Try Again
+            </Button>
           </div>
         </div>
       </div>
@@ -170,16 +216,24 @@ export default function TemplatesClient() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Workout Templates</h1>
-            <p className="text-muted-foreground">Create, manage, and use your workout templates</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+              Workout Templates
+            </h1>
+            <p className="text-muted-foreground">
+              Create, manage, and use your workout templates
+            </p>
           </div>
 
           <div className="flex gap-2">
             <Link href="/workouts/new">
-              <Button variant="outline">➕ New Workout</Button>
+              <Button variant="outline">
+                ➕ New Workout
+              </Button>
             </Link>
             <Link href="/workouts">
-              <Button variant="outline">← Back to Workouts</Button>
+              <Button variant="outline">
+                ← Back to Workouts
+              </Button>
             </Link>
           </div>
         </div>
@@ -188,8 +242,13 @@ export default function TemplatesClient() {
         {templates.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">📋</div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">No Templates Yet</h3>
-            <p className="text-muted-foreground mb-4">Create your first template by saving a workout as a template</p>
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              No Templates Yet
+            </h3>
+            <p className="text-muted-foreground mb-4">
+              Create your first template by saving a workout
+              as a template
+            </p>
             <Link href="/workouts">
               <Button>Go to Workouts</Button>
             </Link>
@@ -197,18 +256,28 @@ export default function TemplatesClient() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {templates.map((template) => {
-              const { exerciseCount, setCount } = getTemplateStats(template)
+              const { exerciseCount, setCount } =
+                getTemplateStats(template)
 
               return (
-                <div key={template.id} className="fitness-card p-6 hover:shadow-lg transition-shadow">
+                <div
+                  key={template.id}
+                  className="fitness-card p-6 hover:shadow-lg transition-shadow"
+                >
                   {/* Template Header */}
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-foreground mb-1">{template.name}</h3>
+                      <h3 className="text-lg font-semibold text-foreground mb-1">
+                        {template.name}
+                      </h3>
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded-full">Template</span>
+                        <span className="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded-full">
+                          Template
+                        </span>
                         <span className="text-sm text-muted-foreground">
-                          {formatDate(new Date(template.createdAt))}
+                          {formatDate(
+                            new Date(template.createdAt)
+                          )}
                         </span>
                       </div>
                     </div>
@@ -216,41 +285,75 @@ export default function TemplatesClient() {
 
                   {/* Description */}
                   {template.description && (
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{template.description}</p>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {template.description}
+                    </p>
                   )}
 
                   {/* Stats */}
                   <div className="grid grid-cols-2 gap-4 mb-4 text-center">
                     <div>
-                      <p className="text-lg font-bold text-foreground">{exerciseCount}</p>
-                      <p className="text-xs text-muted-foreground">Exercises</p>
+                      <p className="text-lg font-bold text-foreground">
+                        {exerciseCount}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Exercises
+                      </p>
                     </div>
                     <div>
-                      <p className="text-lg font-bold text-foreground">{setCount}</p>
-                      <p className="text-xs text-muted-foreground">Sets</p>
+                      <p className="text-lg font-bold text-foreground">
+                        {setCount}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Sets
+                      </p>
                     </div>
                   </div>
 
                   {/* Exercise Preview */}
-                  {template.exercises && template.exercises.length > 0 && (
-                    <div className="mb-4">
-                      <p className="text-xs font-medium text-muted-foreground mb-2">Exercises:</p>
-                      <div className="space-y-1">
-                        {template.exercises.slice(0, 3).map((ex) => (
-                          <p key={ex.id} className="text-xs text-foreground">
-                            • {ex.exercise?.name} ({ex.sets?.length || 0} sets)
-                          </p>
-                        ))}
-                        {template.exercises.length > 3 && (
-                          <p className="text-xs text-muted-foreground">+{template.exercises.length - 3} more...</p>
-                        )}
+                  {template.exercises &&
+                    template.exercises.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-xs font-medium text-muted-foreground mb-2">
+                          Exercises:
+                        </p>
+                        <div className="space-y-1">
+                          {template.exercises
+                            .slice(0, 3)
+                            .map((ex) => (
+                              <p
+                                key={ex.id}
+                                className="text-xs text-foreground"
+                              >
+                                • {ex.exercise?.name} (
+                                {ex.sets?.length || 0} sets)
+                              </p>
+                            ))}
+                          {template.exercises.length >
+                            3 && (
+                            <p className="text-xs text-muted-foreground">
+                              +
+                              {template.exercises.length -
+                                3}{' '}
+                              more...
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
                   {/* Actions */}
                   <div className="flex gap-2">
-                    <Button size="sm" className="flex-1" onClick={() => handleUseTemplate(template.id, template.name)}>
+                    <Button
+                      size="sm"
+                      className="flex-1"
+                      onClick={() =>
+                        handleUseTemplate(
+                          template.id,
+                          template.name
+                        )
+                      }
+                    >
                       🏋️ Use Template
                     </Button>
                     <Link href={`/workouts/${template.id}`}>
@@ -261,7 +364,12 @@ export default function TemplatesClient() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleDeleteTemplate(template.id, template.name)}
+                      onClick={() =>
+                        handleDeleteTemplate(
+                          template.id,
+                          template.name
+                        )
+                      }
                       className="text-red-600 hover:bg-red-50"
                     >
                       🗑️
@@ -288,7 +396,10 @@ export default function TemplatesClient() {
         />
 
         {/* Toast Notifications */}
-        <ToastContainer toasts={toasts} onRemove={removeToast} />
+        <ToastContainer
+          toasts={toasts}
+          onRemove={removeToast}
+        />
       </div>
     </div>
   )

@@ -1,10 +1,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useLanguage } from '@/components/providers'
+import { useTranslations } from '@/hooks'
 import { Button } from '@/components/ui/button'
-import { ProgressChart, ExerciseSelector } from '@/components/features/progress'
-import { ToastContainer, useToast } from '@/components/ui/Toast'
+import {
+  ProgressChart,
+  ExerciseSelector,
+} from '@/components/features/progress'
+import {
+  ToastContainer,
+  useToast,
+} from '@/components/ui/Toast'
 
 interface ProgressDataPoint {
   date: string
@@ -46,15 +52,24 @@ interface ProgressData {
 }
 
 export default function ProgressTrackingClient() {
-  const { t, language } = useLanguage()
-  const { toasts, removeToast, showSuccess, showError } = useToast()
+  const { t } = useTranslations()
+  const language = 'uk'
+  const { toasts, removeToast, showSuccess, showError } =
+    useToast()
 
-  const [progressData, setProgressData] = useState<ProgressData | null>(null)
-  const [selectedExercises, setSelectedExercises] = useState<string[]>([])
+  const [progressData, setProgressData] =
+    useState<ProgressData | null>(null)
+  const [selectedExercises, setSelectedExercises] =
+    useState<string[]>([])
   const [loading, setLoading] = useState(true)
-  const [timeframe, setTimeframe] = useState<'30' | '90' | '180' | 'all'>('90')
-  const [metric, setMetric] = useState<'weight' | 'volume' | 'reps'>('weight')
-  const [showExerciseSelector, setShowExerciseSelector] = useState(false)
+  const [timeframe, setTimeframe] = useState<
+    '30' | '90' | '180' | 'all'
+  >('90')
+  const [metric, setMetric] = useState<
+    'weight' | 'volume' | 'reps'
+  >('weight')
+  const [showExerciseSelector, setShowExerciseSelector] =
+    useState(false)
 
   useEffect(() => {
     fetchProgressData()
@@ -70,10 +85,15 @@ export default function ProgressTrackingClient() {
       })
 
       if (selectedExercises.length > 0) {
-        params.set('exerciseIds', selectedExercises.join(','))
+        params.set(
+          'exerciseIds',
+          selectedExercises.join(',')
+        )
       }
 
-      const response = await fetch(`/api/user/progress?${params}`)
+      const response = await fetch(
+        `/api/user/progress?${params}`
+      )
 
       if (!response.ok) {
         throw new Error('Failed to fetch progress data')
@@ -83,7 +103,9 @@ export default function ProgressTrackingClient() {
       setProgressData(data)
 
       if (data.exercises.length === 0) {
-        showError('No progress data found for selected exercises')
+        showError(
+          'No progress data found for selected exercises'
+        )
       }
     } catch (err) {
       console.error('Error fetching progress data:', err)
@@ -93,7 +115,9 @@ export default function ProgressTrackingClient() {
     }
   }
 
-  const handleExerciseSelectionChange = (exerciseIds: string[]) => {
+  const handleExerciseSelectionChange = (
+    exerciseIds: string[]
+  ) => {
     setSelectedExercises(exerciseIds)
   }
 
@@ -117,8 +141,12 @@ export default function ProgressTrackingClient() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">{t('progressTracking')}</h1>
-          <p className="text-muted-foreground">{t('progressTrackingDescription')}</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+            {t('progressTracking')}
+          </h1>
+          <p className="text-muted-foreground">
+            {t('progressTrackingDescription')}
+          </p>
         </div>
 
         {/* Controls */}
@@ -128,14 +156,19 @@ export default function ProgressTrackingClient() {
             <div className="flex items-center gap-4">
               <Button
                 variant="outline"
-                onClick={() => setShowExerciseSelector(true)}
+                onClick={() =>
+                  setShowExerciseSelector(true)
+                }
                 className="flex items-center gap-2"
               >
-                📊 {t('selectExercises')} ({selectedExercises.length})
+                📊 {t('selectExercises')} (
+                {selectedExercises.length})
               </Button>
 
               {selectedExercises.length === 0 && (
-                <span className="text-sm text-muted-foreground">{t('showingDefaultTracked')}</span>
+                <span className="text-sm text-muted-foreground">
+                  {t('showingDefaultTracked')}
+                </span>
               )}
             </div>
 
@@ -151,9 +184,15 @@ export default function ProgressTrackingClient() {
                 ].map((option) => (
                   <Button
                     key={option.key}
-                    variant={timeframe === option.key ? 'default' : 'ghost'}
+                    variant={
+                      timeframe === option.key
+                        ? 'default'
+                        : 'ghost'
+                    }
                     size="sm"
-                    onClick={() => setTimeframe(option.key as any)}
+                    onClick={() =>
+                      setTimeframe(option.key as any)
+                    }
                     className="rounded-none first:rounded-l-md last:rounded-r-md"
                   >
                     {option.label}
@@ -164,15 +203,33 @@ export default function ProgressTrackingClient() {
               {/* Metric */}
               <div className="flex rounded-md border border-input">
                 {[
-                  { key: 'weight', label: 'Weight', icon: '🏋️' },
-                  { key: 'volume', label: 'Volume', icon: '📊' },
-                  { key: 'reps', label: 'Reps', icon: '🔢' },
+                  {
+                    key: 'weight',
+                    label: 'Weight',
+                    icon: '🏋️',
+                  },
+                  {
+                    key: 'volume',
+                    label: 'Volume',
+                    icon: '📊',
+                  },
+                  {
+                    key: 'reps',
+                    label: 'Reps',
+                    icon: '🔢',
+                  },
                 ].map((option) => (
                   <Button
                     key={option.key}
-                    variant={metric === option.key ? 'default' : 'ghost'}
+                    variant={
+                      metric === option.key
+                        ? 'default'
+                        : 'ghost'
+                    }
                     size="sm"
-                    onClick={() => setMetric(option.key as any)}
+                    onClick={() =>
+                      setMetric(option.key as any)
+                    }
                     className="rounded-none first:rounded-l-md last:rounded-r-md"
                   >
                     {option.icon}
@@ -187,24 +244,40 @@ export default function ProgressTrackingClient() {
             <div className="mt-4 pt-4 border-t border-input">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{progressData.summary.totalExercises}</p>
-                  <p className="text-sm text-muted-foreground">{t('exercisesLabel')}</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-foreground">{getTimeframeLabel()}</p>
-                  <p className="text-sm text-muted-foreground">{t('period')}</p>
+                  <p className="text-2xl font-bold text-foreground">
+                    {progressData.summary.totalExercises}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {t('exercisesLabel')}
+                  </p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">
-                    {new Date(progressData.summary.dateRange.start).toLocaleDateString('uk-UA')}
+                    {getTimeframeLabel()}
                   </p>
-                  <p className="text-sm text-muted-foreground">{t('from')}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t('period')}
+                  </p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">
-                    {new Date(progressData.summary.dateRange.end).toLocaleDateString('uk-UA')}
+                    {new Date(
+                      progressData.summary.dateRange.start
+                    ).toLocaleDateString('uk-UA')}
                   </p>
-                  <p className="text-sm text-muted-foreground">{t('to')}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t('from')}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-foreground">
+                    {new Date(
+                      progressData.summary.dateRange.end
+                    ).toLocaleDateString('uk-UA')}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {t('to')}
+                  </p>
                 </div>
               </div>
             </div>
@@ -215,44 +288,70 @@ export default function ProgressTrackingClient() {
         {loading && (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">{t('loadingProgress')}</p>
+            <p className="text-muted-foreground">
+              {t('loadingProgress')}
+            </p>
           </div>
         )}
 
         {/* Charts */}
-        {!loading && progressData && progressData.exercises.length > 0 && (
-          <div className="space-y-6">
-            {progressData.exercises.map((exerciseProgress) => (
-              <ProgressChart key={exerciseProgress.exercise.id} exerciseProgress={exerciseProgress} metric={metric} />
-            ))}
-          </div>
-        )}
+        {!loading &&
+          progressData &&
+          progressData.exercises.length > 0 && (
+            <div className="space-y-6">
+              {progressData.exercises.map(
+                (exerciseProgress) => (
+                  <ProgressChart
+                    key={exerciseProgress.exercise.id}
+                    exerciseProgress={exerciseProgress}
+                    metric={metric}
+                  />
+                )
+              )}
+            </div>
+          )}
 
         {/* No Data */}
-        {!loading && (!progressData || progressData.exercises.length === 0) && (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">📈</div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">{t('noProgressDataTitle')}</h3>
-            <p className="text-muted-foreground mb-4">
-              {selectedExercises.length > 0 ? t('noProgressDataForSelected') : t('startTrackingToSeeCharts')}
-            </p>
-            <Button variant="outline" onClick={() => setShowExerciseSelector(true)}>
-              {t('selectDifferentExercises')}
-            </Button>
-          </div>
-        )}
+        {!loading &&
+          (!progressData ||
+            progressData.exercises.length === 0) && (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4">📈</div>
+              <h3 className="text-xl font-semibold text-foreground mb-2">
+                {t('noProgressDataTitle')}
+              </h3>
+              <p className="text-muted-foreground mb-4">
+                {selectedExercises.length > 0
+                  ? t('noProgressDataForSelected')
+                  : t('startTrackingToSeeCharts')}
+              </p>
+              <Button
+                variant="outline"
+                onClick={() =>
+                  setShowExerciseSelector(true)
+                }
+              >
+                {t('selectDifferentExercises')}
+              </Button>
+            </div>
+          )}
 
         {/* Exercise Selector Modal */}
         {showExerciseSelector && (
           <ExerciseSelector
             selectedExercises={selectedExercises}
-            onSelectionChange={handleExerciseSelectionChange}
+            onSelectionChange={
+              handleExerciseSelectionChange
+            }
             onClose={() => setShowExerciseSelector(false)}
           />
         )}
 
         {/* Toast Notifications */}
-        <ToastContainer toasts={toasts} onRemove={removeToast} />
+        <ToastContainer
+          toasts={toasts}
+          onRemove={removeToast}
+        />
       </div>
     </div>
   )

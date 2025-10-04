@@ -2,13 +2,20 @@
 
 import { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { useLanguage } from '@/components/providers'
+import { useTranslations } from '@/hooks'
 import { useEffect } from 'react'
-import { useToast, ToastContainer } from '@/components/ui/Toast'
+import {
+  useToast,
+  ToastContainer,
+} from '@/components/ui/Toast'
 
 type FormulaKey = 'epley' | 'brzycki' | 'lombardi'
 
-function calculateOneRepMax(weight: number, reps: number, formula: FormulaKey): number {
+function calculateOneRepMax(
+  weight: number,
+  reps: number,
+  formula: FormulaKey
+): number {
   if (weight <= 0 || reps <= 0) return 0
   switch (formula) {
     case 'epley':
@@ -22,8 +29,11 @@ function calculateOneRepMax(weight: number, reps: number, formula: FormulaKey): 
   }
 }
 
-function generatePercentages(oneRepMax: number): Array<{ percent: number; weight: number }> {
-  const rows: Array<{ percent: number; weight: number }> = []
+function generatePercentages(
+  oneRepMax: number
+): Array<{ percent: number; weight: number }> {
+  const rows: Array<{ percent: number; weight: number }> =
+    []
   for (let p = 50; p <= 100; p += 5) {
     const w = Math.round((oneRepMax * p) / 100)
     rows.push({ percent: p, weight: w })
@@ -36,22 +46,31 @@ interface Props {
 }
 
 export default function CalculatorClient(_props: Props) {
-  const { t } = useLanguage()
+  const { t } = useTranslations()
   const [weight, setWeight] = useState<string>('')
   const [reps, setReps] = useState<string>('')
-  const [formula, setFormula] = useState<FormulaKey>('epley')
-  const [exercises, setExercises] = useState<Array<{ id: string; name: string }>>([])
-  const [selectedExerciseId, setSelectedExerciseId] = useState<string>('')
+  const [formula, setFormula] =
+    useState<FormulaKey>('epley')
+  const [exercises, setExercises] = useState<
+    Array<{ id: string; name: string }>
+  >([])
+  const [selectedExerciseId, setSelectedExerciseId] =
+    useState<string>('')
   const [saving, setSaving] = useState<boolean>(false)
-  const { toasts, showSuccess, showError, removeToast } = useToast()
+  const { toasts, showSuccess, showError, removeToast } =
+    useToast()
 
   const parsedWeight = Number(weight)
   const parsedReps = Number(reps)
   const oneRepMax = useMemo(
-    () => calculateOneRepMax(parsedWeight, parsedReps, formula),
+    () =>
+      calculateOneRepMax(parsedWeight, parsedReps, formula),
     [parsedWeight, parsedReps, formula]
   )
-  const rows = useMemo(() => generatePercentages(oneRepMax), [oneRepMax])
+  const rows = useMemo(
+    () => generatePercentages(oneRepMax),
+    [oneRepMax]
+  )
 
   useEffect(() => {
     let isMounted = true
@@ -60,7 +79,9 @@ export default function CalculatorClient(_props: Props) {
         const res = await fetch('/api/exercises?limit=200')
         if (!res.ok) return
         const data = await res.json()
-        const list = (data.exercises || []).map((e: any) => ({ id: e.id, name: e.name }))
+        const list = (data.exercises || []).map(
+          (e: any) => ({ id: e.id, name: e.name })
+        )
         if (isMounted) setExercises(list)
       } catch (_) {
         // ignore
@@ -72,7 +93,8 @@ export default function CalculatorClient(_props: Props) {
   }, [])
 
   const onSetAsPR = async () => {
-    if (!selectedExerciseId || !oneRepMax || oneRepMax <= 0) return
+    if (!selectedExerciseId || !oneRepMax || oneRepMax <= 0)
+      return
     setSaving(true)
     try {
       const res = await fetch('/api/personal-records', {
@@ -100,12 +122,19 @@ export default function CalculatorClient(_props: Props) {
 
   return (
     <main className="mx-auto max-w-3xl p-4 md:p-6 space-y-6 pb-24 md:pb-10 safe-bottom">
-      <ToastContainer toasts={toasts} onRemove={removeToast} />
-      <h1 className="text-2xl md:text-3xl font-semibold">1RM Calculator</h1>
+      <ToastContainer
+        toasts={toasts}
+        onRemove={removeToast}
+      />
+      <h1 className="text-2xl md:text-3xl font-semibold">
+        1RM Calculator
+      </h1>
 
       <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
         <div>
-          <label className="block text-sm mb-1 text-foreground">{t('weight') ?? 'Weight'}</label>
+          <label className="block text-sm mb-1 text-foreground">
+            {t('weight') ?? 'Weight'}
+          </label>
           <input
             type="number"
             className="w-full border rounded px-3 py-3 md:py-2 bg-background text-foreground"
@@ -116,7 +145,9 @@ export default function CalculatorClient(_props: Props) {
           />
         </div>
         <div>
-          <label className="block text-sm mb-1 text-foreground">{t('reps') ?? 'Reps'}</label>
+          <label className="block text-sm mb-1 text-foreground">
+            {t('reps') ?? 'Reps'}
+          </label>
           <input
             type="number"
             className="w-full border rounded px-3 py-3 md:py-2 bg-background text-foreground"
@@ -127,11 +158,15 @@ export default function CalculatorClient(_props: Props) {
           />
         </div>
         <div>
-          <label className="block text-sm mb-1 text-foreground">{t('formula') ?? 'Formula'}</label>
+          <label className="block text-sm mb-1 text-foreground">
+            {t('formula') ?? 'Formula'}
+          </label>
           <select
             className="w-full border rounded px-3 py-3 md:py-2 bg-background text-foreground"
             value={formula}
-            onChange={(e) => setFormula(e.target.value as FormulaKey)}
+            onChange={(e) =>
+              setFormula(e.target.value as FormulaKey)
+            }
           >
             <option value="epley">Epley</option>
             <option value="brzycki">Brzycki</option>
@@ -142,22 +177,37 @@ export default function CalculatorClient(_props: Props) {
 
       <section className="space-y-2">
         <div className="flex items-baseline gap-2">
-          <span className="text-sm text-muted-foreground">Estimated 1RM:</span>
-          <span className="text-2xl font-bold text-foreground">{Math.round(oneRepMax) || 0}</span>
+          <span className="text-sm text-muted-foreground">
+            Estimated 1RM:
+          </span>
+          <span className="text-2xl font-bold text-foreground">
+            {Math.round(oneRepMax) || 0}
+          </span>
         </div>
         <div className="overflow-x-auto -mx-2 md:mx-0">
           <table className="min-w-full border rounded text-sm md:text-base">
             <thead>
               <tr className="bg-accent">
-                <th className="text-left px-3 py-2 border">%</th>
-                <th className="text-left px-3 py-2 border">{t('weight') ?? 'Weight'}</th>
+                <th className="text-left px-3 py-2 border">
+                  %
+                </th>
+                <th className="text-left px-3 py-2 border">
+                  {t('weight') ?? 'Weight'}
+                </th>
               </tr>
             </thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.percent} className="bg-background text-foreground">
-                  <td className="px-3 py-2 border">{r.percent}%</td>
-                  <td className="px-3 py-2 border">{r.weight}</td>
+                <tr
+                  key={r.percent}
+                  className="bg-background text-foreground"
+                >
+                  <td className="px-3 py-2 border">
+                    {r.percent}%
+                  </td>
+                  <td className="px-3 py-2 border">
+                    {r.weight}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -167,13 +217,19 @@ export default function CalculatorClient(_props: Props) {
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 items-end">
         <div>
-          <label className="block text-sm mb-1 text-foreground">{t('exercise') ?? 'Exercise'}</label>
+          <label className="block text-sm mb-1 text-foreground">
+            {t('exercise') ?? 'Exercise'}
+          </label>
           <select
             className="w-full border rounded px-3 py-3 md:py-2 bg-background text-foreground"
             value={selectedExerciseId}
-            onChange={(e) => setSelectedExerciseId(e.target.value)}
+            onChange={(e) =>
+              setSelectedExerciseId(e.target.value)
+            }
           >
-            <option value="">{t('exercise') ?? 'Exercise'}</option>
+            <option value="">
+              {t('exercise') ?? 'Exercise'}
+            </option>
             {exercises.map((ex) => (
               <option key={ex.id} value={ex.id}>
                 {ex.name}
@@ -184,7 +240,11 @@ export default function CalculatorClient(_props: Props) {
         <div className="flex gap-2 flex-col sm:flex-row">
           <Button
             variant="fitness"
-            onClick={() => navigator.clipboard.writeText(String(Math.round(oneRepMax) || 0))}
+            onClick={() =>
+              navigator.clipboard.writeText(
+                String(Math.round(oneRepMax) || 0)
+              )
+            }
             disabled={!oneRepMax}
             className="w-full sm:w-auto"
           >
@@ -193,10 +253,14 @@ export default function CalculatorClient(_props: Props) {
           <Button
             variant="fitness"
             onClick={onSetAsPR}
-            disabled={!selectedExerciseId || !oneRepMax || saving}
+            disabled={
+              !selectedExerciseId || !oneRepMax || saving
+            }
             className="w-full sm:w-auto"
           >
-            {saving ? (t('saving') ?? 'Saving…') : (t('setAsPR') ?? 'Set as PR')}
+            {saving
+              ? (t('saving') ?? 'Saving…')
+              : (t('setAsPR') ?? 'Set as PR')}
           </Button>
         </div>
       </section>

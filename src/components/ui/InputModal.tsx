@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useLanguage } from '@/components/providers'
+import { useTranslations } from '@/hooks'
 import { Button } from '@/components/ui/button'
 
 interface InputModalProps {
@@ -33,7 +33,7 @@ export default function InputModal({
   loading = false,
   required = true,
 }: InputModalProps) {
-  const { t } = useLanguage()
+  const { t } = useTranslations()
   const [value, setValue] = useState(defaultValue)
 
   // Reset value when modal opens
@@ -78,9 +78,15 @@ export default function InputModal({
         <div className="p-6 pb-4">
           <div className="flex items-center gap-3 mb-2">
             <span className="text-2xl">{icon}</span>
-            <h2 className="text-xl font-semibold text-foreground">{title}</h2>
+            <h2 className="text-xl font-semibold text-foreground">
+              {title}
+            </h2>
           </div>
-          {message && <p className="text-muted-foreground leading-relaxed mb-4">{message}</p>}
+          {message && (
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              {message}
+            </p>
+          )}
 
           {/* Input Field */}
           <div className="space-y-2">
@@ -95,17 +101,29 @@ export default function InputModal({
               disabled={loading}
             />
             {required && !isValid && value.length > 0 && (
-              <p className="text-sm text-destructive">{t('fieldRequired') || 'This field is required'}</p>
+              <p className="text-sm text-destructive">
+                {t('fieldRequired') ||
+                  'This field is required'}
+              </p>
             )}
           </div>
         </div>
 
         {/* Actions */}
         <div className="flex items-center gap-3 p-6 pt-2 bg-accent/10">
-          <Button variant="outline" onClick={onClose} disabled={loading} className="flex-1">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            disabled={loading}
+            className="flex-1"
+          >
             {cancelText || t('cancel')}
           </Button>
-          <Button onClick={handleConfirm} disabled={loading || !isValid} className="flex-1">
+          <Button
+            onClick={handleConfirm}
+            disabled={loading || !isValid}
+            className="flex-1"
+          >
             {loading ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>

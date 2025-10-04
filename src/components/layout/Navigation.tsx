@@ -4,32 +4,59 @@ import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
-import { useLanguage } from '../providers'
+import { useTranslations } from '@/hooks'
 import ThemeToggle from './ThemeToggle'
-import LanguageToggle from './LanguageToggle'
 import { Button } from '../ui/button'
 
 export default function Navigation() {
   const { data: session } = useSession()
   const pathname = usePathname()
-  const { t } = useLanguage()
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { t } = useTranslations()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] =
+    useState(false)
   const [isMoreOpen, setIsMoreOpen] = useState(false)
   const moreRef = useRef<HTMLDivElement | null>(null)
 
-  const hideNav = pathname?.startsWith('/login') || pathname?.startsWith('/register') || !session
+  const hideNav =
+    pathname?.startsWith('/login') ||
+    pathname?.startsWith('/register') ||
+    !session
 
   const primaryItems = [
-    { href: '/dashboard', label: t('dashboard'), icon: '📊' },
+    {
+      href: '/dashboard',
+      label: t('dashboard'),
+      icon: '📊',
+    },
     { href: '/workouts', label: t('workouts'), icon: '🏋️' },
-    { href: '/exercises', label: t('exercises'), icon: '💪' },
+    {
+      href: '/exercises',
+      label: t('exercises'),
+      icon: '💪',
+    },
   ]
   const secondaryItems = [
-    { href: '/profile', label: 'Profile', icon: '👤' },
-    { href: '/templates', label: 'Templates', icon: '📋' },
-    { href: '/dashboard/progress-tracking', label: t('progressTracking'), icon: '📈' },
-    { href: '/dashboard/calendar', label: 'Calendar', icon: '📅' },
-    { href: '/dashboard/calculator', label: '1RM', icon: '🧮' },
+    { href: '/profile', label: t('profile'), icon: '👤' },
+    {
+      href: '/templates',
+      label: t('templates'),
+      icon: '📋',
+    },
+    {
+      href: '/dashboard/progress-tracking',
+      label: t('progressTracking'),
+      icon: '📈',
+    },
+    {
+      href: '/dashboard/calendar',
+      label: t('calendar'),
+      icon: '📅',
+    },
+    {
+      href: '/dashboard/calculator',
+      label: t('calculator'),
+      icon: '🧮',
+    },
   ]
   const allItems = [...primaryItems, ...secondaryItems]
 
@@ -41,7 +68,11 @@ export default function Navigation() {
       }
     }
     document.addEventListener('mousedown', onClickOutside)
-    return () => document.removeEventListener('mousedown', onClickOutside)
+    return () =>
+      document.removeEventListener(
+        'mousedown',
+        onClickOutside
+      )
   }, [])
 
   if (hideNav) {
@@ -55,8 +86,13 @@ export default function Navigation() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-14">
             {/* Logo */}
-            <Link href="/dashboard" className="flex items-center">
-              <span className="text-lg font-bold text-primary">💪 PowerLogs</span>
+            <Link
+              href="/dashboard"
+              className="flex items-center"
+            >
+              <span className="text-lg font-bold text-primary">
+                💪 PowerLogs
+              </span>
             </Link>
 
             {/* Desktop Navigation - Hidden on mobile */}
@@ -93,15 +129,20 @@ export default function Navigation() {
                   <div className="absolute right-0 mt-2 w-56 rounded-md border border-border bg-background shadow-md">
                     <div className="py-1">
                       {secondaryItems.map((item) => {
-                        const isActive = pathname === item.href
+                        const isActive =
+                          pathname === item.href
                         return (
                           <Link
                             key={item.href}
                             href={item.href}
                             className={`flex items-center gap-2 px-3 py-2 text-sm ${
-                              isActive ? 'text-primary bg-accent' : 'text-foreground hover:bg-accent'
+                              isActive
+                                ? 'text-primary bg-accent'
+                                : 'text-foreground hover:bg-accent'
                             }`}
-                            onClick={() => setIsMoreOpen(false)}
+                            onClick={() =>
+                              setIsMoreOpen(false)
+                            }
                           >
                             <span>{item.icon}</span>
                             {item.label}
@@ -117,14 +158,15 @@ export default function Navigation() {
             {/* Right side controls */}
             <div className="flex items-center space-x-2">
               <ThemeToggle />
-              <LanguageToggle />
 
               {/* Mobile menu button */}
               <Button
                 variant="ghost"
                 size="sm"
                 className="md:hidden"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                onClick={() =>
+                  setIsMobileMenuOpen(!isMobileMenuOpen)
+                }
               >
                 <span className="text-lg">☰</span>
               </Button>
@@ -132,12 +174,15 @@ export default function Navigation() {
               {/* Desktop user menu */}
               <div className="hidden md:flex items-center space-x-3">
                 <span className="text-xs text-muted-foreground truncate max-w-[100px]">
-                  {session.user?.name || session.user?.email}
+                  {session.user?.name ||
+                    session.user?.email}
                 </span>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => signOut({ callbackUrl: '/login' })}
+                  onClick={() =>
+                    signOut({ callbackUrl: '/login' })
+                  }
                   className="text-xs"
                 >
                   {t('signOut')}
@@ -156,12 +201,18 @@ export default function Navigation() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={() =>
+                        setIsMobileMenuOpen(false)
+                      }
                       className={`flex items-center gap-3 px-3 py-3 rounded-md text-base font-medium transition-colors ${
-                        isActive ? 'text-primary bg-accent' : 'text-foreground hover:bg-accent'
+                        isActive
+                          ? 'text-primary bg-accent'
+                          : 'text-foreground hover:bg-accent'
                       }`}
                     >
-                      <span className="text-xl">{item.icon}</span>
+                      <span className="text-xl">
+                        {item.icon}
+                      </span>
                       {item.label}
                     </Link>
                   )
@@ -170,7 +221,8 @@ export default function Navigation() {
                 {/* Mobile user menu */}
                 <div className="border-t border-border pt-3 mt-3">
                   <div className="px-3 py-2 text-sm text-muted-foreground">
-                    {session.user?.name || session.user?.email}
+                    {session.user?.name ||
+                      session.user?.email}
                   </div>
                   <button
                     onClick={() => {
@@ -198,11 +250,17 @@ export default function Navigation() {
                 key={item.href}
                 href={item.href}
                 className={`flex flex-col items-center justify-center py-2 px-1 transition-colors ${
-                  isActive ? 'text-primary bg-accent' : 'text-muted-foreground hover:text-foreground'
+                  isActive
+                    ? 'text-primary bg-accent'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
-                <span className="text-xl mb-1">{item.icon}</span>
-                <span className="text-xs font-medium truncate">{item.label}</span>
+                <span className="text-xl mb-1">
+                  {item.icon}
+                </span>
+                <span className="text-xs font-medium truncate">
+                  {item.label}
+                </span>
               </Link>
             )
           })}

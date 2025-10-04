@@ -3,16 +3,23 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useLanguage } from '@/components/providers'
+import { useTranslations } from '@/hooks'
 import { Button } from '@/components/ui/button'
 import ConfirmationModal from '@/components/ui/ConfirmationModal'
 import { ExerciseCard } from '@/components/features/exercise'
-import { Exercise, ExerciseCategory, MuscleGroup } from '@/types/workout'
-import { EXERCISE_CATEGORIES, MUSCLE_GROUPS } from '@/constants/categories'
+import {
+  Exercise,
+  ExerciseCategory,
+  MuscleGroup,
+} from '@/types/workout'
+import {
+  EXERCISE_CATEGORIES,
+  MUSCLE_GROUPS,
+} from '@/constants/categories'
 import { useConfirmation } from '@/hooks/useConfirmation'
 
 export default function ExercisesClient() {
-  const { t } = useLanguage()
+  const { t } = useTranslations()
   const pathname = usePathname()
   const {
     confirmationState,
@@ -24,8 +31,10 @@ export default function ExercisesClient() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState<string>('')
-  const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>('')
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>('')
+  const [selectedMuscleGroup, setSelectedMuscleGroup] =
+    useState<string>('')
 
   useEffect(() => {
     fetchExercises()
@@ -42,10 +51,14 @@ export default function ExercisesClient() {
     try {
       setLoading(true)
       const params = new URLSearchParams()
-      if (selectedCategory) params.append('category', selectedCategory)
-      if (selectedMuscleGroup) params.append('muscleGroup', selectedMuscleGroup)
+      if (selectedCategory)
+        params.append('category', selectedCategory)
+      if (selectedMuscleGroup)
+        params.append('muscleGroup', selectedMuscleGroup)
 
-      const response = await fetch(`/api/exercises?${params}`)
+      const response = await fetch(
+        `/api/exercises?${params}`
+      )
 
       if (!response.ok) {
         throw new Error('Failed to fetch exercises')
@@ -61,7 +74,9 @@ export default function ExercisesClient() {
     }
   }
 
-  const handleDeleteExercise = async (exerciseId: string) => {
+  const handleDeleteExercise = async (
+    exerciseId: string
+  ) => {
     const confirmed = await showConfirmation({
       title: t('confirmDelete'),
       message: t('confirmDeleteMessage'),
@@ -75,15 +90,20 @@ export default function ExercisesClient() {
 
     try {
       setConfirmationLoading(true)
-      const response = await fetch(`/api/exercises/${exerciseId}`, {
-        method: 'DELETE',
-      })
+      const response = await fetch(
+        `/api/exercises/${exerciseId}`,
+        {
+          method: 'DELETE',
+        }
+      )
 
       if (!response.ok) {
         throw new Error('Failed to delete exercise')
       }
 
-      setExercises(exercises.filter((e) => e.id !== exerciseId))
+      setExercises(
+        exercises.filter((e) => e.id !== exerciseId)
+      )
     } catch (err) {
       console.error('Error deleting exercise:', err)
       // TODO: Replace with toast notification
@@ -94,12 +114,20 @@ export default function ExercisesClient() {
 
   const filteredExercises = exercises.filter(
     (exercise) =>
-      exercise.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      exercise.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      exercise.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      exercise.description
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase())
   )
 
-  const systemExercises = filteredExercises.filter((e) => !e.isCustom)
-  const customExercises = filteredExercises.filter((e) => e.isCustom)
+  const systemExercises = filteredExercises.filter(
+    (e) => !e.isCustom
+  )
+  const customExercises = filteredExercises.filter(
+    (e) => e.isCustom
+  )
 
   if (loading) {
     return (
@@ -108,7 +136,9 @@ export default function ExercisesClient() {
           <div className="flex justify-center items-center py-12">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">{t('loading')}</p>
+              <p className="text-muted-foreground">
+                {t('loading')}
+              </p>
             </div>
           </div>
         </div>
@@ -122,14 +152,19 @@ export default function ExercisesClient() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">{t('exerciseLibrary')}</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+              {t('exerciseLibrary')}
+            </h1>
             <p className="text-muted-foreground mt-1">
-              {filteredExercises.length} {t('exercisesAvailable')}
+              {filteredExercises.length}{' '}
+              {t('exercisesAvailable')}
             </p>
           </div>
 
           <Link href="/exercises/new">
-            <Button className="w-full sm:w-auto">➕ {t('addCustomExercise')}</Button>
+            <Button className="w-full sm:w-auto">
+              ➕ {t('addCustomExercise')}
+            </Button>
           </Link>
         </div>
 
@@ -141,7 +176,9 @@ export default function ExercisesClient() {
               type="text"
               placeholder={`${t('search')} exercises...`}
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) =>
+                setSearchQuery(e.target.value)
+              }
               className="w-full px-4 py-3 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
@@ -149,40 +186,58 @@ export default function ExercisesClient() {
           {/* Category and Muscle Group Filters */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">{t('category')}</label>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                {t('category')}
+              </label>
               <select
                 value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
+                onChange={(e) =>
+                  setSelectedCategory(e.target.value)
+                }
                 className="w-full px-4 py-3 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
               >
-                <option value="">{t('allCategories')}</option>
-                {Object.entries(EXERCISE_CATEGORIES).map(([key, value]) => (
-                  <option key={key} value={key}>
-                    {value}
-                  </option>
-                ))}
+                <option value="">
+                  {t('allCategories')}
+                </option>
+                {Object.entries(EXERCISE_CATEGORIES).map(
+                  ([key, value]) => (
+                    <option key={key} value={key}>
+                      {value}
+                    </option>
+                  )
+                )}
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">{t('muscleGroups')}</label>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                {t('muscleGroups')}
+              </label>
               <select
                 value={selectedMuscleGroup}
-                onChange={(e) => setSelectedMuscleGroup(e.target.value)}
+                onChange={(e) =>
+                  setSelectedMuscleGroup(e.target.value)
+                }
                 className="w-full px-4 py-3 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
               >
-                <option value="">{t('allMuscleGroups')}</option>
-                {Object.entries(MUSCLE_GROUPS).map(([key, value]) => (
-                  <option key={key} value={key}>
-                    {value}
-                  </option>
-                ))}
+                <option value="">
+                  {t('allMuscleGroups')}
+                </option>
+                {Object.entries(MUSCLE_GROUPS).map(
+                  ([key, value]) => (
+                    <option key={key} value={key}>
+                      {value}
+                    </option>
+                  )
+                )}
               </select>
             </div>
           </div>
 
           {/* Clear Filters */}
-          {(selectedCategory || selectedMuscleGroup || searchQuery) && (
+          {(selectedCategory ||
+            selectedMuscleGroup ||
+            searchQuery) && (
             <Button
               variant="outline"
               onClick={() => {
@@ -200,7 +255,12 @@ export default function ExercisesClient() {
         {error && (
           <div className="bg-destructive/10 border border-destructive/20 rounded-md p-4 mb-6">
             <p className="text-destructive">{error}</p>
-            <Button variant="outline" size="sm" onClick={fetchExercises} className="mt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={fetchExercises}
+              className="mt-2"
+            >
               Try Again
             </Button>
           </div>
@@ -211,12 +271,16 @@ export default function ExercisesClient() {
           <div className="text-center py-12">
             <div className="text-6xl mb-4">💪</div>
             <h3 className="text-xl font-semibold text-foreground mb-2">
-              {searchQuery || selectedCategory || selectedMuscleGroup
+              {searchQuery ||
+              selectedCategory ||
+              selectedMuscleGroup
                 ? t('noExercisesFound')
                 : 'No exercises available'}
             </h3>
             <p className="text-muted-foreground mb-6">
-              {searchQuery || selectedCategory || selectedMuscleGroup
+              {searchQuery ||
+              selectedCategory ||
+              selectedMuscleGroup
                 ? t('adjustSearchFilters')
                 : t('startByAddingFirst')}
             </p>
@@ -229,10 +293,15 @@ export default function ExercisesClient() {
             {/* System Exercises */}
             {systemExercises.length > 0 && (
               <div>
-                <h2 className="text-xl font-semibold text-foreground mb-4">{t('builtInExercises')}</h2>
+                <h2 className="text-xl font-semibold text-foreground mb-4">
+                  {t('builtInExercises')}
+                </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {systemExercises.map((exercise) => (
-                    <ExerciseCard key={exercise.id} exercise={exercise} />
+                    <ExerciseCard
+                      key={exercise.id}
+                      exercise={exercise}
+                    />
                   ))}
                 </div>
               </div>
@@ -241,13 +310,17 @@ export default function ExercisesClient() {
             {/* Custom Exercises */}
             {customExercises.length > 0 && (
               <div>
-                <h2 className="text-xl font-semibold text-foreground mb-4">{t('customExercises')}</h2>
+                <h2 className="text-xl font-semibold text-foreground mb-4">
+                  {t('customExercises')}
+                </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {customExercises.map((exercise) => (
                     <ExerciseCard
                       key={exercise.id}
                       exercise={exercise}
-                      onDelete={() => handleDeleteExercise(exercise.id)}
+                      onDelete={() =>
+                        handleDeleteExercise(exercise.id)
+                      }
                     />
                   ))}
                 </div>

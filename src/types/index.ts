@@ -7,5 +7,5 @@ export type * from './workout'
 // Component types
 export type * from './components'
 
-// Language types
-export type { Language, TranslationKey } from '../lib/translations'
+// Translation types
+export type { TranslationKey } from '../lib/translations'

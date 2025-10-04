@@ -22,9 +22,18 @@ const templateCreateSchema = z.object({
             z.object({
               weight: z.number().min(0),
               reps: z.number().min(1),
-              rpe: z.number().min(1).max(10).nullable().optional(),
+              rpe: z
+                .number()
+                .min(1)
+                .max(10)
+                .nullable()
+                .optional(),
               isWarmup: z.boolean().default(false),
-              restTime: z.number().min(0).nullable().optional(),
+              restTime: z
+                .number()
+                .min(0)
+                .nullable()
+                .optional(),
             })
           )
           .optional(),
@@ -38,7 +47,10 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
     }
 
     const user = await prisma.user.findUnique({
@@ -46,7 +58,10 @@ export async function GET(request: NextRequest) {
     })
 
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      )
     }
 
     const templates = await prisma.workout.findMany({
@@ -71,7 +86,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ templates })
   } catch (error) {
     console.error('Error fetching templates:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
   }
 }
 
@@ -80,7 +98,10 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
     }
 
     const user = await prisma.user.findUnique({
@@ -88,11 +109,15 @@ export async function POST(request: NextRequest) {
     })
 
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      )
     }
 
     const body = await request.json()
-    const { workoutId, name, description, exercises } = templateCreateSchema.parse(body)
+    const { workoutId, name, description, exercises } =
+      templateCreateSchema.parse(body)
 
     let template
 
@@ -117,7 +142,10 @@ export async function POST(request: NextRequest) {
       })
 
       if (!workout) {
-        return NextResponse.json({ error: 'Workout not found' }, { status: 404 })
+        return NextResponse.json(
+          { error: 'Тренування не знайдено' },
+          { status: 404 }
+        )
       }
 
       // Create template based on existing workout
@@ -135,14 +163,15 @@ export async function POST(request: NextRequest) {
 
       // Copy exercises and sets
       for (const workoutExercise of workout.exercises) {
-        const templateExercise = await prisma.workoutExercise.create({
-          data: {
-            workoutId: template.id,
-            exerciseId: workoutExercise.exerciseId,
-            order: workoutExercise.order,
-            notes: workoutExercise.notes,
-          },
-        })
+        const templateExercise =
+          await prisma.workoutExercise.create({
+            data: {
+              workoutId: template.id,
+              exerciseId: workoutExercise.exerciseId,
+              order: workoutExercise.order,
+              notes: workoutExercise.notes,
+            },
+          })
 
         // Copy sets (remove completed status for template)
         for (const set of workoutExercise.sets) {
@@ -175,18 +204,26 @@ export async function POST(request: NextRequest) {
       // Add exercises if provided
       if (exercises && exercises.length > 0) {
         for (const exerciseData of exercises) {
-          const templateExercise = await prisma.workoutExercise.create({
-            data: {
-              workoutId: template.id,
-              exerciseId: exerciseData.exerciseId,
-              order: exerciseData.order,
-              notes: exerciseData.notes,
-            },
-          })
+          const templateExercise =
+            await prisma.workoutExercise.create({
+              data: {
+                workoutId: template.id,
+                exerciseId: exerciseData.exerciseId,
+                order: exerciseData.order,
+                notes: exerciseData.notes,
+              },
+            })
 
           // Add sets if provided
-          if (exerciseData.sets && exerciseData.sets.length > 0) {
-            for (let i = 0; i < exerciseData.sets.length; i++) {
+          if (
+            exerciseData.sets &&
+            exerciseData.sets.length > 0
+          ) {
+            for (
+              let i = 0;
+              i < exerciseData.sets.length;
+              i++
+            ) {
               const setData = exerciseData.sets[i]
               await prisma.set.create({
                 data: {
@@ -207,28 +244,41 @@ export async function POST(request: NextRequest) {
     }
 
     // Return template with exercises
-    const createdTemplate = await prisma.workout.findUnique({
-      where: { id: template.id },
-      include: {
-        exercises: {
-          include: {
-            exercise: true,
-            sets: {
-              orderBy: { order: 'asc' },
+    const createdTemplate = await prisma.workout.findUnique(
+      {
+        where: { id: template.id },
+        include: {
+          exercises: {
+            include: {
+              exercise: true,
+              sets: {
+                orderBy: { order: 'asc' },
+              },
             },
+            orderBy: { order: 'asc' },
           },
-          orderBy: { order: 'asc' },
         },
-      },
-    })
+      }
+    )
 
-    return NextResponse.json(createdTemplate, { status: 201 })
+    return NextResponse.json(createdTemplate, {
+      status: 201,
+    })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Validation error', details: error.errors }, { status: 400 })
+      return NextResponse.json(
+        {
+          error: 'Validation error',
+          details: error.errors,
+        },
+        { status: 400 }
+      )
     }
 
     console.error('Error creating template:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
   }
 }

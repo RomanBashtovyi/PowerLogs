@@ -1,6 +1,6 @@
 'use client'
 
-import { useLanguage } from '@/components/providers'
+import { useTranslations } from '@/hooks'
 import { Button } from '@/components/ui/button'
 
 interface ConfirmationModalProps {
@@ -11,7 +11,13 @@ interface ConfirmationModalProps {
   message: string
   confirmText?: string
   cancelText?: string
-  confirmVariant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
+  confirmVariant?:
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'link'
   icon?: string
   loading?: boolean
 }
@@ -28,7 +34,7 @@ export default function ConfirmationModal({
   icon = '⚠️',
   loading = false,
 }: ConfirmationModalProps) {
-  const { t } = useLanguage()
+  const { t } = useTranslations()
 
   if (!isOpen) return null
 
@@ -52,17 +58,31 @@ export default function ConfirmationModal({
         <div className="p-6 pb-4">
           <div className="flex items-center gap-3 mb-2">
             <span className="text-2xl">{icon}</span>
-            <h2 className="text-xl font-semibold text-foreground">{title}</h2>
+            <h2 className="text-xl font-semibold text-foreground">
+              {title}
+            </h2>
           </div>
-          <p className="text-muted-foreground leading-relaxed">{message}</p>
+          <p className="text-muted-foreground leading-relaxed">
+            {message}
+          </p>
         </div>
 
         {/* Actions */}
         <div className="flex items-center gap-3 p-6 pt-2 bg-accent/10">
-          <Button variant="outline" onClick={onClose} disabled={loading} className="flex-1">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            disabled={loading}
+            className="flex-1"
+          >
             {cancelText || t('cancel')}
           </Button>
-          <Button variant={confirmVariant} onClick={handleConfirm} disabled={loading} className="flex-1">
+          <Button
+            variant={confirmVariant}
+            onClick={handleConfirm}
+            disabled={loading}
+            className="flex-1"
+          >
             {loading ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
